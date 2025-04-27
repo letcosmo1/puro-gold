@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -56,9 +56,7 @@ export default function Home() {
       </div>
 
       <Dialog open={ openEditClient } onOpenChange={ setOpenEditClient }>
-        <DialogTrigger />
-
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader>
             <DialogTitle>Editar nome do cliente</DialogTitle>
           </DialogHeader>
@@ -74,9 +72,7 @@ export default function Home() {
       </Dialog>
 
       <Dialog open={ openAddClient } onOpenChange={ setOpenAddClient }>
-        <DialogTrigger />
-
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader>
             <DialogTitle>Adicionar cliente</DialogTitle>
           </DialogHeader>
