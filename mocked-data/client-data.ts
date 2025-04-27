@@ -1,6 +1,6 @@
 import { ClientEventLogType, ClientType } from "@/types/client-type";
 
-export const clients: ClientType[] = [
+export const mockedClients: ClientType[] = [
   { id: 1, name: 'Alice Johnson' },
   { id: 2, name: 'Brian Smith' },
   { id: 3, name: 'Carla Martinez' },
