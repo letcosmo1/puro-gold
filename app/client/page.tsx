@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { clientOneEventLog } from '@/mocked-data/client-data'
 import jsPDF from 'jspdf'
 import { ArrowDownToLine, Share2, X } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 const formatFirestoreTimestamp = (timestamp: { seconds: number, nanoseconds: number } ) => {
   const date = new Date(timestamp.seconds * 1000); // Multiply by 1000 to convert seconds to milliseconds
@@ -98,19 +98,6 @@ const ClientPage = () => {
     }
   };
 
-  const [logs, setLogs] = useState<string[]>([]);
-
-  useEffect(() => {
-    const originalLog = console.log;
-    console.log = (...args) => {
-      setLogs(prev => [...prev, args.map(a => String(a)).join(" ")]);
-      originalLog(...args);
-    };
-    return () => {
-      console.log = originalLog;
-    };
-  }, []);
-
   return (
     <div className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
       <div>
@@ -162,11 +149,6 @@ const ClientPage = () => {
       <div className="flex justify-between">
         <Button className="w-[65%]">Adicionar Compra</Button>
         <Button className="w-[30%]">Abater</Button>
-      </div>
-
-      <div style={{ backgroundColor: "black", color: "lime", padding: 10 }}>
-        <h3>Console Logs</h3>
-        <pre>{logs.join("\n")}</pre>
       </div>
     </div>
   )
