@@ -1,12 +1,22 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { clients } from "@/mocked-data/client-data";
 import { Settings2 } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
+  const [open, setOpen] = useState(false);
+
+  const handleEditClientButtonClick = () => {
+    setOpen(true);
+  }
+
   return (
     <div className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
       <div>
@@ -25,7 +35,7 @@ export default function Home() {
                     <TableRow key={ client.id }>
                       <TableCell className="flex justify-between py-4">
                         <p>{ client.name }</p>
-                        <Settings2 />
+                        <Settings2 onClick={ handleEditClientButtonClick } />
                       </TableCell>
                     </TableRow>
                   )
@@ -37,6 +47,24 @@ export default function Home() {
       </div>
 
       <Button className="w-full">Adicionar Cliente</Button>
+
+      <Dialog open={ open } onOpenChange={ setOpen }>
+        <DialogTrigger />
+        
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar nome do cliente</DialogTitle>
+          </DialogHeader>
+          <div>
+            <Label htmlFor="client-name" className="mb-2">Novo nome</Label>
+            <Input id="client-name" />
+          </div>
+          <DialogFooter className="flex-row">
+            <Button className="w-1/2" onClick={ () => setOpen(false) }>Cancelar</Button>
+            <Button className="w-1/2" onClick={ () => setOpen(false) }>Confirmar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
