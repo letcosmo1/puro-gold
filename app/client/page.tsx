@@ -2,13 +2,13 @@
 
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { clientOneEventLog } from '@/mocked-data/client-data'
 import jsPDF from 'jspdf'
 import { ArrowDownToLine, Share2, X } from 'lucide-react'
 import React from 'react'
 
-const formatFirestoreTimestamp = (timestamp:any) => {
+const formatFirestoreTimestamp = (timestamp: { seconds: number, nanoseconds: number } ) => {
   const date = new Date(timestamp.seconds * 1000); // Multiply by 1000 to convert seconds to milliseconds
   return date.toLocaleDateString('pt-BR');  // Format the date in Brazilian locale
 }
