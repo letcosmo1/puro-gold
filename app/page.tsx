@@ -3,7 +3,6 @@
 import AddClientDialog from "@/components/home/add-client-dialog";
 import EditClientDialog from "@/components/home/edit-client-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
