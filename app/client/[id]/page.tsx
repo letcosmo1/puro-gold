@@ -8,20 +8,22 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
-import { mockedClientEventLog } from '@/mocked-data/client-data'
+import { mockedClientEventLog, mockedClients } from '@/mocked-data/client-data'
 import { ClientEventLogType, ClientType } from '@/types/client-type'
 import { toBrazilianCurrency } from '@/util/currency-format'
 import { getCurrentDate, mockFirestoreTimestamp } from '@/util/date-format'
 import { toNegative, toPositive } from '@/util/math'
 import { X } from 'lucide-react'
+import { ParamValue } from 'next/dist/server/request/params'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 
 const ClientPage = () => {
-  const client: ClientType = {
-    id: 1,
-    name: "Alice Johnson"
-  }
+  const params = useParams();
+  const clientIdParam: ParamValue = params.id;
+
+  const [client, setClient] = useState<ClientType>({ id: 0, name: "" });
 
   const [clientEventsLog, setClientEventsLog] = useState<ClientEventLogType[]>(mockedClientEventLog);
 
@@ -132,7 +134,20 @@ const ClientPage = () => {
     setOpenAddPayment(false);
   }
 
+  const mockedGetClientById = () => {
+    const clientId: number = Number(clientIdParam);
+
+    const findClient: ClientType | undefined = mockedClients.find(client => client.id === clientId);
+
+    if(findClient) {
+      setClient(findClient);
+    }
+
+    //TODO: handle client not found
+  }
+
   useEffect(() => {
+    mockedGetClientById();
     calcClientEventsTotal(clientEventsLog);
   }, []);
 

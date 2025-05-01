@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { mockedClients } from "@/mocked-data/client-data";
 import { ClientType } from "@/types/client-type";
 import { Settings2 } from "lucide-react";
+import Link from "next/link";
 import { BaseSyntheticEvent, useState } from "react";
 
 export default function Home() {
@@ -123,7 +124,9 @@ export default function Home() {
                     return (
                       <TableRow key={ client.id }>
                         <TableCell className="flex justify-between py-4">
-                          <p>{ client.name }</p>
+                          <Link href={`/client/${client.id}`}>
+                            <p>{ client.name }</p>
+                          </Link>
                           <Settings2 onClick={ () => handleEditClientButtonClick(client.id, client.name) } />
                         </TableCell>
                       </TableRow>
