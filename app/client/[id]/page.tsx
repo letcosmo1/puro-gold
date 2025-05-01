@@ -1,11 +1,10 @@
 'use client'
 
+import AddPaymentDialog from '@/components/client/add-payment-dialog'
+import AddPurchaseDialog from '@/components/client/add-purchase-dialog'
 import ClientEventLogItem from '@/components/client/client-event-log-item'
 import PdfButtons from '@/components/client/pdf-buttons'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { mockedClientEventLog, mockedClients } from '@/mocked-data/client-data'
@@ -50,12 +49,9 @@ const ClientPage = () => {
     setClientEventsTotal(total);
   }
 
+  /***** ADD PURCHASE DIALOG FUNCTIONS *****/
   const handleAddPurchaseButtonClick = () => {
     setOpenAddPurchase(true);
-  }
-
-  const handleAddPaymentButtonClick = () => {
-    setOpenAddPayment(true);
   }
 
   const handleAddPurchaseCancelButtonClick = () => {
@@ -64,26 +60,12 @@ const ClientPage = () => {
     setOpenAddPurchase(false);
   }
 
-  const handleAddPaymentCancelButtonClick = () => {
-    setAddPaymentValueInput("");
-    setAddPaymentDescriptionInput("");
-    setOpenAddPayment(false);
-  }
-
   const handleAddPurchaseValueInputChange = (e: BaseSyntheticEvent) => {
     setAddPurchaseValueInput(e.target.value);
   }
 
   const handleAddPurchaseDescriptionInputChange = (e: BaseSyntheticEvent) => {
     setAddPurchaseDescriptionInput(e.target.value);
-  }
-
-  const handleAddPaymentValueInputChange = (e: BaseSyntheticEvent) => {
-    setAddPaymentValueInput(e.target.value);
-  }
-
-  const handleAddPaymentDescriptionInputChange = (e: BaseSyntheticEvent) => {
-    setAddPaymentDescriptionInput(e.target.value);
   }
 
   const handleAddPurchaseConfirmButtonClick = () => {
@@ -106,7 +88,28 @@ const ClientPage = () => {
       setClientEventsLog(clientEventsLogCopy);
     }
     //TODO: add error toast
+    setAddPurchaseValueInput("");
+    setAddPurchaseDescriptionInput("");
     setOpenAddPurchase(false);
+  }
+
+  /***** ADD PAYMENT DIALOG FUNCTIONS *****/  
+  const handleAddPaymentButtonClick = () => {
+    setOpenAddPayment(true);
+  }
+
+  const handleAddPaymentCancelButtonClick = () => {
+    setAddPaymentValueInput("");
+    setAddPaymentDescriptionInput("");
+    setOpenAddPayment(false);
+  }
+
+  const handleAddPaymentValueInputChange = (e: BaseSyntheticEvent) => {
+    setAddPaymentValueInput(e.target.value);
+  }
+
+  const handleAddPaymentDescriptionInputChange = (e: BaseSyntheticEvent) => {
+    setAddPaymentDescriptionInput(e.target.value);
   }
 
   const handleAddPaymentConfirmButtonClick = () => {
@@ -123,14 +126,14 @@ const ClientPage = () => {
         value: toNegative(paymentValue)
       }
 
-      console.log(clientEvent)
-
       const clientEventsLogCopy: ClientEventLogType[] = [clientEvent, ...clientEventsLog ];
 
       calcClientEventsTotal(clientEventsLogCopy);
       setClientEventsLog(clientEventsLogCopy);
     }
     //TODO: add error toast
+    setAddPaymentValueInput("");
+    setAddPaymentDescriptionInput("");
     setOpenAddPayment(false);
   }
 
@@ -203,63 +206,27 @@ const ClientPage = () => {
         </section>
       </div>
 
-      <Dialog open={ openAddPurchase } onOpenChange={ setOpenAddPurchase }>
-        <DialogContent aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle>Adicionar Compra</DialogTitle>
-          </DialogHeader>
-          <div>
-            <Label htmlFor="purchase-value" className="mb-2">Valor da compra</Label>
-            <Input
-              type="number"
-              id="purchase-value"
-              onChange={ handleAddPurchaseValueInputChange }
-              value={ addPurchaseValueInput }
-            />
-          </div>
-          <div>
-            <Label htmlFor="purchase-description" className="mb-2">Descrição da compra</Label>
-            <Input
-              id="purchase-description"
-              onChange={ handleAddPurchaseDescriptionInputChange }
-              value={ addPurchaseDescriptionInput }
-            />
-          </div>
-          <DialogFooter className="flex-row">
-            <Button variant="secondary" className="w-1/2" onClick={ handleAddPurchaseCancelButtonClick }>Cancelar</Button>
-            <Button className="w-1/2" onClick={ handleAddPurchaseConfirmButtonClick }>Confirmar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddPurchaseDialog 
+        openAddPurchase={ openAddPurchase }
+        setOpenAddPurchase={ setOpenAddPurchase }
+        handleAddPurchaseValueInputChange={ handleAddPurchaseValueInputChange }
+        addPurchaseValueInput={ addPurchaseValueInput }
+        handleAddPurchaseDescriptionInputChange={ handleAddPurchaseDescriptionInputChange }
+        addPurchaseDescriptionInput={ addPurchaseDescriptionInput }
+        handleAddPurchaseCancelButtonClick={ handleAddPurchaseCancelButtonClick }
+        handleAddPurchaseConfirmButtonClick={ handleAddPurchaseConfirmButtonClick }
+      />
 
-      <Dialog open={ openAddPayment } onOpenChange={ setOpenAddPayment }>
-        <DialogContent aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle>Adicionar Pagamento</DialogTitle>
-          </DialogHeader>
-          <div>
-            <Label htmlFor="payment-value" className="mb-2">Valor do pagamento</Label>
-            <Input
-              type="number"
-              id="payment-value"
-              onChange={ handleAddPaymentValueInputChange }
-              value={ addPaymentValueInput }
-            />
-          </div>
-          <div>
-            <Label htmlFor="payment-description" className="mb-2">Descrição do pagamento</Label>
-            <Input
-              id="payment-description"
-              onChange={ handleAddPaymentDescriptionInputChange }
-              value={ addPaymentDescriptionInput }
-            />
-          </div>
-          <DialogFooter className="flex-row">
-            <Button variant="secondary" className="w-1/2" onClick={ handleAddPaymentCancelButtonClick }>Cancelar</Button>
-            <Button className="w-1/2" onClick={ handleAddPaymentConfirmButtonClick }>Confirmar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddPaymentDialog 
+        openAddPayment={ openAddPayment }
+        setOpenAddPayment={ setOpenAddPayment }
+        handleAddPaymentValueInputChange={ handleAddPaymentValueInputChange }
+        addPaymentValueInput={ addPaymentValueInput }
+        handleAddPaymentDescriptionInputChange={ handleAddPaymentDescriptionInputChange }
+        addPaymentDescriptionInput={ addPaymentDescriptionInput }
+        handleAddPaymentCancelButtonClick={ handleAddPaymentCancelButtonClick }
+        handleAddPaymentConfirmButtonClick={ handleAddPaymentConfirmButtonClick }
+      />
     </>
   )
 }
