@@ -23,14 +23,14 @@ export const mockedClients: ClientType[] = [
   { id: 20, name: 'Tina Walker' }
 ];
 
-export const clientOneEventLog: ClientEventLogType[] = [
+export const mockedClientEventLog: ClientEventLogType[] = [
   {
     clientId: 1,
     type: "payment",
     date: "07/09/2024",
     description: "Event description 1",
     createdAt: { seconds: 1745722041, nanoseconds: 221560001 },
-    value: 20
+    value: -20
   },
   {
     clientId: 1,
@@ -46,7 +46,7 @@ export const clientOneEventLog: ClientEventLogType[] = [
     date: "25/08/2024",
     description: "Event description 3",
     createdAt: { seconds: 1745722041, nanoseconds: 221585988 },
-    value: 205
+    value: -25
   },
   {
     clientId: 1,
@@ -54,7 +54,7 @@ export const clientOneEventLog: ClientEventLogType[] = [
     date: "07/11/2024",
     description: "Event description 4",
     createdAt: { seconds: 1745722041, nanoseconds: 221596956 },
-    value: 10.5
+    value: -10.5
   },
   {
     clientId: 1,
