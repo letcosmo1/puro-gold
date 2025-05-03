@@ -25,6 +25,7 @@ export const mockedClients: ClientType[] = [
 
 export const mockedClientEventLog: ClientEventLogType[] = [
   {
+    id: 1,
     clientId: 1,
     type: "payment",
     date: "07/09/2024",
@@ -33,6 +34,7 @@ export const mockedClientEventLog: ClientEventLogType[] = [
     value: -20
   },
   {
+    id: 2,
     clientId: 1,
     type: "purchase",
     date: "04/07/2024",
@@ -41,6 +43,7 @@ export const mockedClientEventLog: ClientEventLogType[] = [
     value: 100
   },
   {
+    id: 3,
     clientId: 1,
     type: "payment",
     date: "25/08/2024",
@@ -49,6 +52,7 @@ export const mockedClientEventLog: ClientEventLogType[] = [
     value: -25
   },
   {
+    id: 1,
     clientId: 1,
     type: "payment",
     date: "07/11/2024",
@@ -57,6 +61,7 @@ export const mockedClientEventLog: ClientEventLogType[] = [
     value: -10.5
   },
   {
+    id: 4,
     clientId: 1,
     type: "purchase",
     date: "14/04/2025",
@@ -65,6 +70,7 @@ export const mockedClientEventLog: ClientEventLogType[] = [
     value: 20.8
   },
   {
+    id: 5,
     clientId: 1,
     type: "purchase",
     date: "05/11/2024",

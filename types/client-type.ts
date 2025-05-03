@@ -4,6 +4,7 @@ export type ClientType = {
 }
 
 export type ClientEventLogType = {
+  id: number,
   clientId: number,
   type: "purchase" | "payment",
   date: string,

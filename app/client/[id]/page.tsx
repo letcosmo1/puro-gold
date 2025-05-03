@@ -2,11 +2,9 @@
 
 import AddPaymentDialog from '@/components/client/add-payment-dialog'
 import AddPurchaseDialog from '@/components/client/add-purchase-dialog'
-import ClientEventLogItem from '@/components/client/client-event-log-item'
+import ClientEventsLog from '@/components/client/client-events-log'
 import PdfButtons from '@/components/client/pdf-buttons'
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { mockedClientEventLog, mockedClients } from '@/mocked-data/client-data'
 import { ClientEventLogType, ClientType } from '@/types/client-type'
 import { toBrazilianCurrency } from '@/util/currency-format'
@@ -37,12 +35,12 @@ const ClientPage = () => {
   const [addPaymentValueInput, setAddPaymentValueInput] = useState<string>("");
   const [addPaymentDescriptionInput, setAddPaymentDescriptionInput] = useState<string>("");
 
-  const calcClientEventsTotal = (clientEventLogParam: ClientEventLogType[]) => {
-    if(clientEventLogParam.length === 0) return
+  const calcClientEventsTotal = (localClientEventsLog: ClientEventLogType[]) => {
+    if(localClientEventsLog.length === 0) return
 
     let total = 0;
 
-    clientEventLogParam.forEach(clientEvent => {
+    localClientEventsLog.forEach(clientEvent => {
       total += clientEvent.value;
     });
 
@@ -70,10 +68,13 @@ const ClientPage = () => {
 
   const handleAddPurchaseConfirmButtonClick = () => {
     if(addPurchaseValueInput && addPurchaseDescriptionInput) {
+      const id: number = clientEventsLog.length + 1;
+
       const currentDate: string = getCurrentDate();
       const purchaseValue: number = Number(addPurchaseValueInput);
 
       const clientEvent: ClientEventLogType = {
+        id: id,
         clientId: client.id,
         type: "purchase",
         date: currentDate,
@@ -114,10 +115,13 @@ const ClientPage = () => {
 
   const handleAddPaymentConfirmButtonClick = () => {
     if(addPaymentValueInput && addPaymentDescriptionInput) {
+      const id: number = clientEventsLog.length + 1;
+
       const currentDate: string = getCurrentDate();
       const paymentValue: number = Number(addPaymentValueInput);
 
       const clientEvent: ClientEventLogType = {
+        id: id,
         clientId: client.id,
         type: "payment",
         date: currentDate,
@@ -181,23 +185,12 @@ const ClientPage = () => {
               clientEventsTotal={ clientEventsTotal } 
             />
           </div>
-          <ScrollArea className="w-full h-[calc(100%-24px)]">
-            <Table>
-              <TableBody>
-                {
-                  clientEventsLog.map((clientEvent, i )=> {
-                    return (
-                      <TableRow key={ i }>
-                        <TableCell>
-                          <ClientEventLogItem  clientEvent={ clientEvent } />
-                        </TableCell>
-                      </TableRow> 
-                    )
-                  })
-                }
-              </TableBody>
-            </Table>
-          </ScrollArea>
+          <ClientEventsLog
+            client={ client }
+            clientEventsLog={clientEventsLog} 
+            setClientEventsLog={ setClientEventsLog }
+            calcClientEventsTotal={ calcClientEventsTotal }        
+          />
         </section>  
 
         <section className="flex justify-between">
