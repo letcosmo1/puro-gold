@@ -153,10 +153,12 @@ const ClientPage = () => {
     //TODO: handle client not found
   }
 
-  useEffect(() => {
-    mockedGetClientById();
+/* eslint-disable react-hooks/exhaustive-deps */
+  useEffect(() => { 
+    mockedGetClientById(); 
     calcClientEventsTotal(clientEventsLog);
   }, []);
+/* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <>
@@ -186,7 +188,6 @@ const ClientPage = () => {
             />
           </div>
           <ClientEventsLog
-            client={ client }
             clientEventsLog={clientEventsLog} 
             setClientEventsLog={ setClientEventsLog }
             calcClientEventsTotal={ calcClientEventsTotal }        

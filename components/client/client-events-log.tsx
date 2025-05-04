@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '../ui/table'
-import { ClientEventLogType, ClientType } from '@/types/client-type'
+import { ClientEventLogType } from '@/types/client-type'
 import ClientEventLogItem from './client-event-log-item'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Label } from '../ui/label'
@@ -24,7 +24,6 @@ const initializeClientEvent: ClientEventLogType = {
 }
 
 type PropTypes = {
-  client: ClientType,
   clientEventsLog: ClientEventLogType[],
   setClientEventsLog: React.Dispatch<ClientEventLogType[]>,
   calcClientEventsTotal: (localClientEventsLog: ClientEventLogType[]) => void
@@ -32,7 +31,6 @@ type PropTypes = {
 
 const ClientEventsLog = (props: PropTypes) => {
   const { 
-    client,
     clientEventsLog,
     setClientEventsLog,
     calcClientEventsTotal

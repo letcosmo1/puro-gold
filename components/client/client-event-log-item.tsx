@@ -3,7 +3,7 @@ import { toBrazilianCurrency } from '@/util/currency-format'
 import { formatFirestoreTimestamp } from '@/util/date-format'
 import { toPositive } from '@/util/math'
 import React from 'react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { EllipsisVertical } from 'lucide-react'
 
 type PropTypes = {
