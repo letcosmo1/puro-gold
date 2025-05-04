@@ -1,14 +1,14 @@
 'use client'
 
-import AddPaymentDialog from '@/components/client/add-payment-dialog'
-import AddPurchaseDialog from '@/components/client/add-purchase-dialog'
-import ClientEventsLog from '@/components/client/client-events-log'
-import PdfButtons from '@/components/client/pdf-buttons'
+import AddPaymentDialog from '@/components/customer/add-payment-dialog'
+import AddPurchaseDialog from '@/components/customer/add-purchase-dialog'
+import CustomerEventsHistory from '@/components/customer/customer-events-history'
+import PdfButtons from '@/components/customer/pdf-buttons'
 import { Button } from '@/components/ui/button'
-import { mockedClientEventLog, mockedClients } from '@/mocked-data/client-data'
-import { ClientEventLogType, ClientType } from '@/types/client-type'
+import { mockedCustomerEventHistory, mockedCustomers } from '@/mocked-data/customer-data'
+import { CustomerEvent, Customer } from '@/types/customer'
 import { toBrazilianCurrency } from '@/util/currency-format'
-import { getCurrentDate, mockFirestoreTimestamp } from '@/util/date-format'
+import { getCurrentDate } from '@/util/date-format'
 import { toNegative, toPositive } from '@/util/math'
 import { X } from 'lucide-react'
 import { ParamValue } from 'next/dist/server/request/params'
@@ -16,15 +16,15 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 
-const ClientPage = () => {
+const CustomerPage = () => {
   const params = useParams();
-  const clientIdParam: ParamValue = params.id;
+  const customerIdParam: ParamValue = params.id;
 
-  const [client, setClient] = useState<ClientType>({ id: 0, name: "" });
+  const [customer, setCustomer] = useState<Customer>({ id: 0, name: "" });
 
-  const [clientEventsLog, setClientEventsLog] = useState<ClientEventLogType[]>(mockedClientEventLog);
+  const [customerEventsHistory, setCustomerEventsHistory] = useState<CustomerEvent[]>(mockedCustomerEventHistory);
 
-  const [clientEventsTotal, setClientEventsTotal] = useState<number | null>(null);
+  const [customerEventsTotal, setCustomerEventsTotal] = useState<number | null>(null);
 
   const [openAddPurchase, setOpenAddPurchase] = useState<boolean>(false);
   const [openAddPayment, setOpenAddPayment] = useState<boolean>(false);
@@ -35,16 +35,16 @@ const ClientPage = () => {
   const [addPaymentValueInput, setAddPaymentValueInput] = useState<string>("");
   const [addPaymentDescriptionInput, setAddPaymentDescriptionInput] = useState<string>("");
 
-  const calcClientEventsTotal = (localClientEventsLog: ClientEventLogType[]) => {
-    if(localClientEventsLog.length === 0) return
+  const calcCustomerEventsTotal = (localCustomerEventsLog: CustomerEvent[]) => {
+    if(localCustomerEventsLog.length === 0) return
 
     let total = 0;
 
-    localClientEventsLog.forEach(clientEvent => {
-      total += clientEvent.value;
+    localCustomerEventsLog.forEach(customerEvent => {
+      total += customerEvent.value;
     });
 
-    setClientEventsTotal(total);
+    setCustomerEventsTotal(total);
   }
 
   /***** ADD PURCHASE DIALOG FUNCTIONS *****/
@@ -68,25 +68,25 @@ const ClientPage = () => {
 
   const handleAddPurchaseConfirmButtonClick = () => {
     if(addPurchaseValueInput && addPurchaseDescriptionInput) {
-      const id: number = clientEventsLog.length + 1;
+      const id: number = customerEventsHistory.length + 1;
 
       const currentDate: string = getCurrentDate();
       const purchaseValue: number = Number(addPurchaseValueInput);
 
-      const clientEvent: ClientEventLogType = {
+      const customerEvent: CustomerEvent = {
         id: id,
-        clientId: client.id,
+        customerId: customer.id,
         type: "purchase",
         date: currentDate,
         description: addPurchaseDescriptionInput,
-        createdAt: mockFirestoreTimestamp(),
+        createdAt: new Date,
         value: toPositive(purchaseValue)
       }
 
-      const clientEventsLogCopy: ClientEventLogType[] = [clientEvent, ...clientEventsLog ];
+      const customerEventsLogCopy: CustomerEvent[] = [customerEvent, ...customerEventsHistory ];
 
-      calcClientEventsTotal(clientEventsLogCopy);
-      setClientEventsLog(clientEventsLogCopy);
+      calcCustomerEventsTotal(customerEventsLogCopy);
+      setCustomerEventsHistory(customerEventsLogCopy);
     }
     //TODO: add error toast
     setAddPurchaseValueInput("");
@@ -115,25 +115,25 @@ const ClientPage = () => {
 
   const handleAddPaymentConfirmButtonClick = () => {
     if(addPaymentValueInput && addPaymentDescriptionInput) {
-      const id: number = clientEventsLog.length + 1;
+      const id: number = customerEventsHistory.length + 1;
 
       const currentDate: string = getCurrentDate();
       const paymentValue: number = Number(addPaymentValueInput);
 
-      const clientEvent: ClientEventLogType = {
+      const customerEvent: CustomerEvent = {
         id: id,
-        clientId: client.id,
+        customerId: customer.id,
         type: "payment",
         date: currentDate,
         description: addPaymentDescriptionInput,
-        createdAt: mockFirestoreTimestamp(),
+        createdAt: new Date,
         value: toNegative(paymentValue)
       }
 
-      const clientEventsLogCopy: ClientEventLogType[] = [clientEvent, ...clientEventsLog ];
+      const customerEventsLogCopy: CustomerEvent[] = [customerEvent, ...customerEventsHistory ];
 
-      calcClientEventsTotal(clientEventsLogCopy);
-      setClientEventsLog(clientEventsLogCopy);
+      calcCustomerEventsTotal(customerEventsLogCopy);
+      setCustomerEventsHistory(customerEventsLogCopy);
     }
     //TODO: add error toast
     setAddPaymentValueInput("");
@@ -141,22 +141,22 @@ const ClientPage = () => {
     setOpenAddPayment(false);
   }
 
-  const mockedGetClientById = () => {
-    const clientId: number = Number(clientIdParam);
+  const mockedGetCustomerById = () => {
+    const customerId: number = Number(customerIdParam);
 
-    const findClient: ClientType | undefined = mockedClients.find(client => client.id === clientId);
+    const findCustomer: Customer | undefined = mockedCustomers.find(customer => customer.id === customerId);
 
-    if(findClient) {
-      setClient(findClient);
+    if(findCustomer) {
+      setCustomer(findCustomer);
     }
 
-    //TODO: handle client not found
+    //TODO: handle customer not found
   }
 
 /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => { 
-    mockedGetClientById(); 
-    calcClientEventsTotal(clientEventsLog);
+    mockedGetCustomerById(); 
+    calcCustomerEventsTotal(customerEventsHistory);
   }, []);
 /* eslint-enable react-hooks/exhaustive-deps */
 
@@ -170,27 +170,27 @@ const ClientPage = () => {
             </Link>
           </nav>
           <h2 className="font-medium text-sm">Cliente</h2>
-          <p>{ client.name }</p>
+          <p>{ customer.name }</p>
         </section>
 
         <section className="bg-card text-card-foreground flex flex-col gap-2 rounded-md border p-4">
           <h2 className="font-medium text-sm">Total a pagar</h2>
-          <p className="text-lg">{ toBrazilianCurrency(clientEventsTotal ? clientEventsTotal : 0) }</p>
+          <p className="text-lg">{ toBrazilianCurrency(customerEventsTotal ? customerEventsTotal : 0) }</p>
         </section>
 
         <section className="rounded-md border p-4 h-[calc(100%-194px-var(--spacing)*16)]">
           <div className="flex justify-between mb-4">
             <h2 className="font-medium text-sm">Histórico</h2>
             <PdfButtons 
-              client={ client }
-              clientEventsLog={ clientEventsLog }
-              clientEventsTotal={ clientEventsTotal } 
+              customer={ customer }
+              customerEventsHistory={ customerEventsHistory }
+              customerEventsTotal={ customerEventsTotal } 
             />
           </div>
-          <ClientEventsLog
-            clientEventsLog={clientEventsLog} 
-            setClientEventsLog={ setClientEventsLog }
-            calcClientEventsTotal={ calcClientEventsTotal }        
+          <CustomerEventsHistory
+            customerEventsHistory={ customerEventsHistory } 
+            setCustomerEventsHistory={ setCustomerEventsHistory }
+            calcCustomerEventsTotal={ calcCustomerEventsTotal }        
           />
         </section>  
 
@@ -225,4 +225,4 @@ const ClientPage = () => {
   )
 }
 
-export default ClientPage
+export default CustomerPage

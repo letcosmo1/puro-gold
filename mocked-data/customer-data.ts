@@ -1,6 +1,6 @@
-import { ClientEventLogType, ClientType } from "@/types/client-type";
+import { CustomerEvent, Customer } from "@/types/customer";
 
-export const mockedClients: ClientType[] = [
+export const mockedCustomers: Customer[] = [
   { id: 1, name: 'Alice Johnson' },
   { id: 2, name: 'Brian Smith' },
   { id: 3, name: 'Carla Martinez' },
@@ -23,59 +23,59 @@ export const mockedClients: ClientType[] = [
   { id: 20, name: 'Tina Walker' }
 ];
 
-export const mockedClientEventLog: ClientEventLogType[] = [
+export const mockedCustomerEventHistory: CustomerEvent[] = [
   {
     id: 1,
-    clientId: 1,
+    customerId: 1,
     type: "payment",
     date: "07/09/2024",
     description: "Event description 1",
-    createdAt: { seconds: 1745722041, nanoseconds: 221560001 },
+    createdAt: new Date('2025-01-01T10:00:00Z') ,
     value: -20
   },
   {
     id: 2,
-    clientId: 1,
+    customerId: 1,
     type: "purchase",
     date: "04/07/2024",
     description: "Event description 2",
-    createdAt: { seconds: 1745722041, nanoseconds: 221575021 },
+    createdAt: new Date('2025-02-01T12:30:00Z'),
     value: 100
   },
   {
     id: 3,
-    clientId: 1,
+    customerId: 1,
     type: "payment",
     date: "25/08/2024",
     description: "Event description 3",
-    createdAt: { seconds: 1745722041, nanoseconds: 221585988 },
+    createdAt: new Date('2025-03-01T09:15:00Z'),
     value: -25
   },
   {
     id: 1,
-    clientId: 1,
+    customerId: 1,
     type: "payment",
     date: "07/11/2024",
     description: "Event description 4",
-    createdAt: { seconds: 1745722041, nanoseconds: 221596956 },
+    createdAt: new Date('2025-04-01T14:45:00Z'),
     value: -10.5
   },
   {
     id: 4,
-    clientId: 1,
+    customerId: 1,
     type: "purchase",
     date: "14/04/2025",
     description: "Event description 5",
-    createdAt: { seconds: 1745722041, nanoseconds: 221606016 },
+    createdAt: new Date('2025-05-01T16:00:00Z'),
     value: 20.8
   },
   {
     id: 5,
-    clientId: 1,
+    customerId: 1,
     type: "purchase",
     date: "05/11/2024",
     description: "Event description 6",
-    createdAt: { seconds: 1745722041, nanoseconds: 221615076 },
+    createdAt: new Date('2025-06-01T08:20:00Z'),
     value: 99.9
   },
 ]

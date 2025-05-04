@@ -1,21 +1,21 @@
-import { ClientEventLogType } from '@/types/client-type'
+import { CustomerEvent } from '@/types/customer'
 import { toBrazilianCurrency } from '@/util/currency-format'
-import { formatFirestoreTimestamp } from '@/util/date-format'
 import { toPositive } from '@/util/math'
 import React from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { EllipsisVertical } from 'lucide-react'
+import { formatDate } from '@/util/date-format'
 
 type PropTypes = {
-  clientEvent: ClientEventLogType,
-  handleEditClientEventButtonClick: (clientEvent: ClientEventLogType) => void
+  customerEvent: CustomerEvent,
+  handleEditCustomerEventButtonClick: (customerEvent: CustomerEvent) => void
 }
 
-const ClientEventLogItem = ({ clientEvent, handleEditClientEventButtonClick }: PropTypes) => {
+const CustomerEventHistoryItem = ({ customerEvent, handleEditCustomerEventButtonClick }: PropTypes) => {
   const getEventDescription = () => {
-    const signal: string = clientEvent.type === "purchase" ? "+" : "-";
-    const value: string = toBrazilianCurrency(toPositive(clientEvent.value));
-    const description: string = clientEvent.description;
+    const signal: string = customerEvent.type === "purchase" ? "+" : "-";
+    const value: string = toBrazilianCurrency(toPositive(customerEvent.value));
+    const description: string = customerEvent.description;
 
     const eventDescription: string = `${ signal } ${ value } ${ description }`;
 
@@ -26,19 +26,19 @@ const ClientEventLogItem = ({ clientEvent, handleEditClientEventButtonClick }: P
     <article className="flex justify-between py-1">
       <div className="w-[calc(100%-36px)]">
         <div className="flex justify-between mb-2">
-          <h3>{ clientEvent.type === "purchase" ? "Compra" : "Pagamento" }</h3>
-          <p>{ formatFirestoreTimestamp(clientEvent.createdAt) }</p>
+          <h3>{ customerEvent.type === "purchase" ? "Compra" : "Pagamento" }</h3>
+          <p>{ formatDate(customerEvent.createdAt) }</p>
         </div>
         <p>{ getEventDescription() }</p>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger className="flex h-fit"><EllipsisVertical /></DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onSelect={ () => handleEditClientEventButtonClick(clientEvent) }>Editar</DropdownMenuItem>
+          <DropdownMenuItem onSelect={ () => handleEditCustomerEventButtonClick(customerEvent) }>Editar</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </article>
   )
 }
 
-export default ClientEventLogItem
+export default CustomerEventHistoryItem
