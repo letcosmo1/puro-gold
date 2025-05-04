@@ -1,118 +1,118 @@
 'use client'
 
-import AddClientDialog from "@/components/home/add-client-dialog";
-import EditClientDialog from "@/components/home/edit-client-dialog";
+import AddCustomerDialog from "@/components/home/add-customer-dialog";
+import EditCustomerDialog from "@/components/home/edit-customer-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { mockedClients } from "@/mocked-data/client-data";
-import { ClientType } from "@/types/client-type";
+import { mockedCustomers } from "@/mocked-data/customer-data";
+import { Customer } from "@/types/customer";
 import { Settings2 } from "lucide-react";
 import Link from "next/link";
 import { BaseSyntheticEvent, useState } from "react";
 
 export default function Home() {
-  const [openEditClient, setOpenEditClient] = useState<boolean>(false);
-  const [openAddClient, setOpenAddClient] = useState<boolean>(false);
+  const [openEditCustomer, setOpenEditCustomer] = useState<boolean>(false);
+  const [openAddCustomer, setOpenAddCustomer] = useState<boolean>(false);
 
-  const [clients, setClients] = useState<ClientType[]>(mockedClients);
+  const [customers, setCustomers] = useState<Customer[]>(mockedCustomers);
 
-  const [filteredClients, setFilteredClients] = useState<ClientType[]>(mockedClients);
+  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>(mockedCustomers);
   const [filterInput, setFilterInput] = useState<string>("");
 
-  const [addClientNameInput, setAddClientNameInput] = useState<string>("");
-  const [editClientNameInput, setEditClientNameInput] = useState<string>("");
+  const [addCustomerNameInput, setAddCustomerNameInput] = useState<string>("");
+  const [editCustomerNameInput, setEditCustomerNameInput] = useState<string>("");
 
-  const [selectedClientEditId, setSelectedClientEditId] = useState<number | null>(null);
+  const [selectedCustomerEditId, setSelectedCustomerEditId] = useState<number | null>(null);
 
-  const handleFilterClientsInputChange = (e: BaseSyntheticEvent) => {
+  const handleFilterCustomersInputChange = (e: BaseSyntheticEvent) => {
     const filterWord: string = e.target.value;
 
     setFilterInput(filterWord);
 
-    setFilteredClients(clients.filter(client => 
-      client.name.toLowerCase().includes(filterWord.toLowerCase()))
+    setFilteredCustomers(customers.filter(customer => 
+      customer.name.toLowerCase().includes(filterWord.toLowerCase()))
     );
   }
 
-  /***** EDIT CLIENT DIALOG FUNCTIONS *****/
-  const handleEditClientNameInputChange = (e: BaseSyntheticEvent) => {
-    setEditClientNameInput(e.target.value);
+  /***** EDIT CUSTOMER DIALOG FUNCTIONS *****/
+  const handleEditCustomerNameInputChange = (e: BaseSyntheticEvent) => {
+    setEditCustomerNameInput(e.target.value);
   }
   
-  const handleEditClientButtonClick = (id: number, name: string) => {
+  const handleEditCustomerButtonClick = (id: number, name: string) => {
     if(id && name) {
-      setOpenEditClient(true);
-      setEditClientNameInput(name);
-      setSelectedClientEditId(id);
+      setOpenEditCustomer(true);
+      setEditCustomerNameInput(name);
+      setSelectedCustomerEditId(id);
     }
     //TODO: add error toast
   }
 
-  const handleEditClientConfirmButtonClick = () => {
-    if(editClientNameInput && selectedClientEditId) {
-      const clientsCopy: ClientType[] = [...clients];
-      const clientsUpdated: ClientType[] = clientsCopy.map(client => client.id === selectedClientEditId ? 
-        { ...client, name: editClientNameInput }
-        : client
+  const handleEditCustomerConfirmButtonClick = () => {
+    if(editCustomerNameInput && selectedCustomerEditId) {
+      const customersCopy: Customer[] = [...customers];
+      const customersUpdated: Customer[] = customersCopy.map(customer => customer.id === selectedCustomerEditId ? 
+        { ...customer, name: editCustomerNameInput }
+        : customer
       );
 
-      setClients(clientsUpdated);
-      setFilteredClients(clientsUpdated);
+      setCustomers(customersUpdated);
+      setFilteredCustomers(customersUpdated);
       setFilterInput("");
-      setEditClientNameInput("");
-      setSelectedClientEditId(null);
+      setEditCustomerNameInput("");
+      setSelectedCustomerEditId(null);
     }
     //TODO: add error toast
-    setOpenEditClient(false);
+    setOpenEditCustomer(false);
   }
 
-  const handleEditClientCancelButtonClick = () => {
-    setEditClientNameInput("");
-    setSelectedClientEditId(null);
-    setOpenEditClient(false);
+  const handleEditCustomerCancelButtonClick = () => {
+    setEditCustomerNameInput("");
+    setSelectedCustomerEditId(null);
+    setOpenEditCustomer(false);
   }
 
-  /***** ADD CLIENT DIALOG FUNCTIONS *****/
-  const handleAddClientButtonClick = () => {
-    setOpenAddClient(true);
+  /***** ADD CUSTOMER DIALOG FUNCTIONS *****/
+  const handleAddCustomerButtonClick = () => {
+    setOpenAddCustomer(true);
   }
 
-  const handleAddClientNameInputChange = (e: BaseSyntheticEvent) => {
-    setAddClientNameInput(e.target.value);
+  const handleAddCustomerNameInputChange = (e: BaseSyntheticEvent) => {
+    setAddCustomerNameInput(e.target.value);
   }
 
-  const handleAddClientConfirmButtonClick = () => {
-    if(addClientNameInput) {
-      const id: number = clients.length + 1;
+  const handleAddCustomerConfirmButtonClick = () => {
+    if(addCustomerNameInput) {
+      const id: number = customers.length + 1;
 
-      const clientsCopy: ClientType[] = [...clients, { id: id, name: addClientNameInput }];
+      const customersCopy: Customer[] = [...customers, { id: id, name: addCustomerNameInput }];
 
-      setClients(clientsCopy);
-      setFilteredClients(clientsCopy);
+      setCustomers(customersCopy);
+      setFilteredCustomers(customersCopy);
       setFilterInput("");
-      setAddClientNameInput("");
+      setAddCustomerNameInput("");
     }
     //TODO: add error toast
-    setOpenAddClient(false);
+    setOpenAddCustomer(false);
   }
 
-  const handleAddClientCancelButtonClick = () => {
-    setAddClientNameInput("");
-    setOpenAddClient(false);
+  const handleAddCustomerCancelButtonClick = () => {
+    setAddCustomerNameInput("");
+    setOpenAddCustomer(false);
   }
 
   return (
     <>
       <div className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
         <div>
-          <Label htmlFor="search-client" className="mb-2">Pesquisar</Label>
+          <Label htmlFor="search-customer" className="mb-2">Pesquisar</Label>
           <Input 
-            id="search-client" 
+            id="search-customer" 
             placeholder="Nome do cliente" 
-            onChange={ handleFilterClientsInputChange }
+            onChange={ handleFilterCustomersInputChange }
             value={ filterInput }
           />
         </div>
@@ -123,14 +123,14 @@ export default function Home() {
             <Table>
               <TableBody>
                 {
-                  filteredClients.map(client => { 
+                  filteredCustomers.map(customer => { 
                     return (
-                      <TableRow key={ client.id }>
+                      <TableRow key={ customer.id }>
                         <TableCell className="flex justify-between py-4">
-                          <Link href={`/client/${client.id}`}>
-                            <p>{ client.name }</p>
+                          <Link href={`/customer/${customer.id}`}>
+                            <p>{ customer.name }</p>
                           </Link>
-                          <Settings2 onClick={ () => handleEditClientButtonClick(client.id, client.name) } />
+                          <Settings2 onClick={ () => handleEditCustomerButtonClick(customer.id, customer.name) } />
                         </TableCell>
                       </TableRow>
                     )
@@ -141,25 +141,25 @@ export default function Home() {
           </ScrollArea>
         </div>
 
-        <Button onClick={ handleAddClientButtonClick } className="w-full">Adicionar Cliente</Button>
+        <Button onClick={ handleAddCustomerButtonClick } className="w-full">Adicionar Cliente</Button>
       </div>
 
-      <AddClientDialog 
-        openAddClient={ openAddClient }
-        setOpenAddClient={ setOpenAddClient }
-        handleAddClientNameInputChange={ handleAddClientNameInputChange }
-        addClientNameInput={ addClientNameInput } 
-        handleAddClientCancelButtonClick={ handleAddClientCancelButtonClick }
-        handleAddClientConfirmButtonClick={ handleAddClientConfirmButtonClick }
+      <AddCustomerDialog 
+        openAddCustomer={ openAddCustomer }
+        setOpenAddCustomer={ setOpenAddCustomer }
+        handleAddCustomerNameInputChange={ handleAddCustomerNameInputChange }
+        addCustomerNameInput={ addCustomerNameInput } 
+        handleAddCustomerCancelButtonClick={ handleAddCustomerCancelButtonClick }
+        handleAddCustomerConfirmButtonClick={ handleAddCustomerConfirmButtonClick }
       />
 
-      <EditClientDialog 
-        openEditClient={ openEditClient }
-        setOpenEditClient={ setOpenEditClient }
-        handleEditClientNameInputChange={ handleEditClientNameInputChange }
-        editClientNameInput={ editClientNameInput } 
-        handleEditClientCancelButtonClick={ handleEditClientCancelButtonClick }
-        handleEditClientConfirmButtonClick={ handleEditClientConfirmButtonClick }
+      <EditCustomerDialog 
+        openEditCustomer={ openEditCustomer }
+        setOpenEditCustomer={ setOpenEditCustomer }
+        handleEditCustomerNameInputChange={ handleEditCustomerNameInputChange }
+        editCustomerNameInput={ editCustomerNameInput } 
+        handleEditCustomerCancelButtonClick={ handleEditCustomerCancelButtonClick }
+        handleEditCustomerConfirmButtonClick={ handleEditCustomerConfirmButtonClick }
       />
     </>
   );

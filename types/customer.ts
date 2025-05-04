@@ -1,11 +1,11 @@
-export type Client = {
+export type Customer = {
   id: number,
   name: string
 }
 
-export type ClientEvent = {
+export type CustomerEvent = {
   id: number,
-  clientId: number,
+  customerId: number,
   type: "purchase" | "payment",
   date: string,
   description: string,

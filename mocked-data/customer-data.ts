@@ -1,6 +1,6 @@
-import { ClientEvent, Client } from "@/types/client-type";
+import { CustomerEvent, Customer } from "@/types/customer";
 
-export const mockedClients: Client[] = [
+export const mockedCustomers: Customer[] = [
   { id: 1, name: 'Alice Johnson' },
   { id: 2, name: 'Brian Smith' },
   { id: 3, name: 'Carla Martinez' },
@@ -23,10 +23,10 @@ export const mockedClients: Client[] = [
   { id: 20, name: 'Tina Walker' }
 ];
 
-export const mockedClientEventLog: ClientEvent[] = [
+export const mockedCustomerEventHistory: CustomerEvent[] = [
   {
     id: 1,
-    clientId: 1,
+    customerId: 1,
     type: "payment",
     date: "07/09/2024",
     description: "Event description 1",
@@ -35,7 +35,7 @@ export const mockedClientEventLog: ClientEvent[] = [
   },
   {
     id: 2,
-    clientId: 1,
+    customerId: 1,
     type: "purchase",
     date: "04/07/2024",
     description: "Event description 2",
@@ -44,7 +44,7 @@ export const mockedClientEventLog: ClientEvent[] = [
   },
   {
     id: 3,
-    clientId: 1,
+    customerId: 1,
     type: "payment",
     date: "25/08/2024",
     description: "Event description 3",
@@ -53,7 +53,7 @@ export const mockedClientEventLog: ClientEvent[] = [
   },
   {
     id: 1,
-    clientId: 1,
+    customerId: 1,
     type: "payment",
     date: "07/11/2024",
     description: "Event description 4",
@@ -62,7 +62,7 @@ export const mockedClientEventLog: ClientEvent[] = [
   },
   {
     id: 4,
-    clientId: 1,
+    customerId: 1,
     type: "purchase",
     date: "14/04/2025",
     description: "Event description 5",
@@ -71,7 +71,7 @@ export const mockedClientEventLog: ClientEvent[] = [
   },
   {
     id: 5,
-    clientId: 1,
+    customerId: 1,
     type: "purchase",
     date: "05/11/2024",
     description: "Event description 6",
