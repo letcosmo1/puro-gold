@@ -1,5 +1,4 @@
-export const formatFirestoreTimestamp = (timestamp: { seconds: number, nanoseconds: number } ) => {
-  const date = new Date(timestamp.seconds * 1000); // Multiply by 1000 to convert seconds to milliseconds
+export const formatDate = (date: Date ) => {
   return date.toLocaleDateString('pt-BR');
 }
 
@@ -29,13 +28,4 @@ export const getCurrentDateTime =() => {
   const seconds = pad(now.getSeconds());
 
   return `${day}${month}${year}${hours}${minutes}${seconds}`;
-}
-
-export const mockFirestoreTimestamp = () => {
-  const date = new Date();
-
-  const seconds = Math.floor(date.getTime() / 1000);
-  const nanoseconds = (date.getTime() % 1000) * 1_000_000;
-
-  return { seconds, nanoseconds };
 }

@@ -1,12 +1,12 @@
-import { ClientEventLogType, ClientType } from '@/types/client-type';
+import { ClientEvent, Client } from '@/types/client-type';
 import { toBrazilianCurrency } from '@/util/currency-format';
-import { formatFirestoreTimestamp, getCurrentDateTime } from '@/util/date-format';
+import { formatDate, getCurrentDateTime } from '@/util/date-format';
 import { toPositive } from '@/util/math';
 import jsPDF from 'jspdf';
 import { ArrowDownToLine, Share2 } from 'lucide-react';
 import React from 'react'
 
-const getEventDescription = (clientEvent: ClientEventLogType) => {
+const getEventDescription = (clientEvent: ClientEvent) => {
   const signal: string = clientEvent.type === "purchase" ? "+" : "-";
   const value: string = toBrazilianCurrency(toPositive(clientEvent.value));
   const description: string = clientEvent.description;
@@ -16,7 +16,7 @@ const getEventDescription = (clientEvent: ClientEventLogType) => {
   return eventDescription;
 }
 
-const clientEventsPdfLayout = (client: ClientType, clientEventsLog: ClientEventLogType[], clientEventsTotal: number | null) => {
+const clientEventsPdfLayout = (client: Client, clientEventsLog: ClientEvent[], clientEventsTotal: number | null) => {
   const total: number = clientEventsTotal ? clientEventsTotal : 0;
 
   const doc = new jsPDF();
@@ -36,7 +36,7 @@ const clientEventsPdfLayout = (client: ClientType, clientEventsLog: ClientEventL
   clientEventsLog.forEach(clientEvent => {
     line = line + 5;
     doc.text(clientEvent.type === "purchase" ? "Compra" : "Pagamento", 10, line);
-    doc.text(formatFirestoreTimestamp(clientEvent.createdAt), 35, line);
+    doc.text(formatDate(clientEvent.createdAt), 35, line);
     
     line = line + 7;
     doc.text(getEventDescription(clientEvent), 10, line);
@@ -49,8 +49,8 @@ const clientEventsPdfLayout = (client: ClientType, clientEventsLog: ClientEventL
 }
 
 type PropTypes = {
-  client: ClientType,
-  clientEventsLog: ClientEventLogType[]
+  client: Client,
+  clientEventsLog: ClientEvent[]
   clientEventsTotal: number | null
 }
 

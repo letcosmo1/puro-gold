@@ -1,17 +1,14 @@
-export type ClientType = {
+export type Client = {
   id: number,
   name: string
 }
 
-export type ClientEventLogType = {
+export type ClientEvent = {
   id: number,
   clientId: number,
   type: "purchase" | "payment",
   date: string,
   description: string,
   value: number
-  createdAt: {
-    seconds: number,
-    nanoseconds: number
-  }
+  createdAt: Date
 }

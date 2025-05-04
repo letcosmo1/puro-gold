@@ -6,9 +6,9 @@ import ClientEventsLog from '@/components/client/client-events-log'
 import PdfButtons from '@/components/client/pdf-buttons'
 import { Button } from '@/components/ui/button'
 import { mockedClientEventLog, mockedClients } from '@/mocked-data/client-data'
-import { ClientEventLogType, ClientType } from '@/types/client-type'
+import { ClientEvent, Client } from '@/types/client-type'
 import { toBrazilianCurrency } from '@/util/currency-format'
-import { getCurrentDate, mockFirestoreTimestamp } from '@/util/date-format'
+import { getCurrentDate } from '@/util/date-format'
 import { toNegative, toPositive } from '@/util/math'
 import { X } from 'lucide-react'
 import { ParamValue } from 'next/dist/server/request/params'
@@ -20,9 +20,9 @@ const ClientPage = () => {
   const params = useParams();
   const clientIdParam: ParamValue = params.id;
 
-  const [client, setClient] = useState<ClientType>({ id: 0, name: "" });
+  const [client, setClient] = useState<Client>({ id: 0, name: "" });
 
-  const [clientEventsLog, setClientEventsLog] = useState<ClientEventLogType[]>(mockedClientEventLog);
+  const [clientEventsLog, setClientEventsLog] = useState<ClientEvent[]>(mockedClientEventLog);
 
   const [clientEventsTotal, setClientEventsTotal] = useState<number | null>(null);
 
@@ -35,7 +35,7 @@ const ClientPage = () => {
   const [addPaymentValueInput, setAddPaymentValueInput] = useState<string>("");
   const [addPaymentDescriptionInput, setAddPaymentDescriptionInput] = useState<string>("");
 
-  const calcClientEventsTotal = (localClientEventsLog: ClientEventLogType[]) => {
+  const calcClientEventsTotal = (localClientEventsLog: ClientEvent[]) => {
     if(localClientEventsLog.length === 0) return
 
     let total = 0;
@@ -73,17 +73,17 @@ const ClientPage = () => {
       const currentDate: string = getCurrentDate();
       const purchaseValue: number = Number(addPurchaseValueInput);
 
-      const clientEvent: ClientEventLogType = {
+      const clientEvent: ClientEvent = {
         id: id,
         clientId: client.id,
         type: "purchase",
         date: currentDate,
         description: addPurchaseDescriptionInput,
-        createdAt: mockFirestoreTimestamp(),
+        createdAt: new Date,
         value: toPositive(purchaseValue)
       }
 
-      const clientEventsLogCopy: ClientEventLogType[] = [clientEvent, ...clientEventsLog ];
+      const clientEventsLogCopy: ClientEvent[] = [clientEvent, ...clientEventsLog ];
 
       calcClientEventsTotal(clientEventsLogCopy);
       setClientEventsLog(clientEventsLogCopy);
@@ -120,17 +120,17 @@ const ClientPage = () => {
       const currentDate: string = getCurrentDate();
       const paymentValue: number = Number(addPaymentValueInput);
 
-      const clientEvent: ClientEventLogType = {
+      const clientEvent: ClientEvent = {
         id: id,
         clientId: client.id,
         type: "payment",
         date: currentDate,
         description: addPaymentDescriptionInput,
-        createdAt: mockFirestoreTimestamp(),
+        createdAt: new Date,
         value: toNegative(paymentValue)
       }
 
-      const clientEventsLogCopy: ClientEventLogType[] = [clientEvent, ...clientEventsLog ];
+      const clientEventsLogCopy: ClientEvent[] = [clientEvent, ...clientEventsLog ];
 
       calcClientEventsTotal(clientEventsLogCopy);
       setClientEventsLog(clientEventsLogCopy);
@@ -144,7 +144,7 @@ const ClientPage = () => {
   const mockedGetClientById = () => {
     const clientId: number = Number(clientIdParam);
 
-    const findClient: ClientType | undefined = mockedClients.find(client => client.id === clientId);
+    const findClient: Client | undefined = mockedClients.find(client => client.id === clientId);
 
     if(findClient) {
       setClient(findClient);

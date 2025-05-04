@@ -1,32 +1,29 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '../ui/table'
-import { ClientEventLogType } from '@/types/client-type'
+import { ClientEvent } from '@/types/client-type'
 import ClientEventLogItem from './client-event-log-item'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { formatFirestoreTimestamp } from '@/util/date-format'
+import { formatDate } from '@/util/date-format'
 import { toNegative, toPositive } from '@/util/math'
 
-const initializeClientEvent: ClientEventLogType = {
+const initializeClientEvent: ClientEvent = {
   id: 0,
   clientId: 0,
   type: "purchase",
   date: "",
   description: "",
   value: 0,
-  createdAt: {
-    seconds: 0,
-    nanoseconds: 0
-  }
+  createdAt: new Date(0)
 }
 
 type PropTypes = {
-  clientEventsLog: ClientEventLogType[],
-  setClientEventsLog: React.Dispatch<ClientEventLogType[]>,
-  calcClientEventsTotal: (localClientEventsLog: ClientEventLogType[]) => void
+  clientEventsLog: ClientEvent[],
+  setClientEventsLog: React.Dispatch<ClientEvent[]>,
+  calcClientEventsTotal: (localClientEventsLog: ClientEvent[]) => void
 }
 
 const ClientEventsLog = (props: PropTypes) => {
@@ -41,9 +38,9 @@ const ClientEventsLog = (props: PropTypes) => {
   const [editClientEventValueInput, setEditClientEventValueInput] = useState<string>("");
   const [editClientEventDescriptionInput, setEditClientEventDescriptionInput] = useState<string>("");
 
-  const [selectedClientEvent, setSelectedClientEvent] = useState<ClientEventLogType>(initializeClientEvent);
+  const [selectedClientEvent, setSelectedClientEvent] = useState<ClientEvent>(initializeClientEvent);
 
-  const handleEditClientEventButtonClick = (clientEvent: ClientEventLogType) => {
+  const handleEditClientEventButtonClick = (clientEvent: ClientEvent) => {
     setOpenClientEvent(true);
     setSelectedClientEvent(clientEvent);
     setEditClientEventValueInput(String(toPositive(clientEvent.value)));
@@ -69,9 +66,9 @@ const ClientEventsLog = (props: PropTypes) => {
     if(editClientEventValueInput && editClientEventDescriptionInput) {
       const editClientEventValueToNumber: number = Number(editClientEventValueInput);
 
-      const clientEventsLogCopy: ClientEventLogType[] = [...clientEventsLog];
+      const clientEventsLogCopy: ClientEvent[] = [...clientEventsLog];
 
-      const clientEventsLogCopyUpdated: ClientEventLogType[] = 
+      const clientEventsLogCopyUpdated: ClientEvent[] = 
         clientEventsLogCopy.map(clientEvent => clientEvent.id === selectedClientEvent.id ? 
         { ...clientEvent, 
           value: clientEvent.type === "purchase" ? toPositive(editClientEventValueToNumber) : toNegative(editClientEventValueToNumber),  
@@ -121,7 +118,7 @@ const ClientEventsLog = (props: PropTypes) => {
           <div>
             <div className="flex justify-between mb-2">
               <h3>{ selectedClientEvent.type === "purchase" ? "Compra" : "Pagamento" }</h3>
-              <p>{ formatFirestoreTimestamp(selectedClientEvent.createdAt) }</p>
+              <p>{ formatDate(selectedClientEvent.createdAt) }</p>
             </div>
 
             <Label htmlFor="event-value" className="mb-2">Valor</Label>
