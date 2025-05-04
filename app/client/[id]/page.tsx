@@ -1,13 +1,10 @@
 'use client'
 
-import ClientEventLogItem from '@/components/client/client-event-log-item'
+import AddPaymentDialog from '@/components/client/add-payment-dialog'
+import AddPurchaseDialog from '@/components/client/add-purchase-dialog'
+import ClientEventsLog from '@/components/client/client-events-log'
 import PdfButtons from '@/components/client/pdf-buttons'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { mockedClientEventLog, mockedClients } from '@/mocked-data/client-data'
 import { ClientEventLogType, ClientType } from '@/types/client-type'
 import { toBrazilianCurrency } from '@/util/currency-format'
@@ -38,36 +35,27 @@ const ClientPage = () => {
   const [addPaymentValueInput, setAddPaymentValueInput] = useState<string>("");
   const [addPaymentDescriptionInput, setAddPaymentDescriptionInput] = useState<string>("");
 
-  const calcClientEventsTotal = (clientEventLogParam: ClientEventLogType[]) => {
-    if(clientEventLogParam.length === 0) return
+  const calcClientEventsTotal = (localClientEventsLog: ClientEventLogType[]) => {
+    if(localClientEventsLog.length === 0) return
 
     let total = 0;
 
-    clientEventLogParam.forEach(clientEvent => {
+    localClientEventsLog.forEach(clientEvent => {
       total += clientEvent.value;
     });
 
     setClientEventsTotal(total);
   }
 
+  /***** ADD PURCHASE DIALOG FUNCTIONS *****/
   const handleAddPurchaseButtonClick = () => {
     setOpenAddPurchase(true);
-  }
-
-  const handleAddPaymentButtonClick = () => {
-    setOpenAddPayment(true);
   }
 
   const handleAddPurchaseCancelButtonClick = () => {
     setAddPurchaseValueInput("");
     setAddPurchaseDescriptionInput("");
     setOpenAddPurchase(false);
-  }
-
-  const handleAddPaymentCancelButtonClick = () => {
-    setAddPaymentValueInput("");
-    setAddPaymentDescriptionInput("");
-    setOpenAddPayment(false);
   }
 
   const handleAddPurchaseValueInputChange = (e: BaseSyntheticEvent) => {
@@ -78,20 +66,15 @@ const ClientPage = () => {
     setAddPurchaseDescriptionInput(e.target.value);
   }
 
-  const handleAddPaymentValueInputChange = (e: BaseSyntheticEvent) => {
-    setAddPaymentValueInput(e.target.value);
-  }
-
-  const handleAddPaymentDescriptionInputChange = (e: BaseSyntheticEvent) => {
-    setAddPaymentDescriptionInput(e.target.value);
-  }
-
   const handleAddPurchaseConfirmButtonClick = () => {
     if(addPurchaseValueInput && addPurchaseDescriptionInput) {
+      const id: number = clientEventsLog.length + 1;
+
       const currentDate: string = getCurrentDate();
       const purchaseValue: number = Number(addPurchaseValueInput);
 
       const clientEvent: ClientEventLogType = {
+        id: id,
         clientId: client.id,
         type: "purchase",
         date: currentDate,
@@ -106,15 +89,39 @@ const ClientPage = () => {
       setClientEventsLog(clientEventsLogCopy);
     }
     //TODO: add error toast
+    setAddPurchaseValueInput("");
+    setAddPurchaseDescriptionInput("");
     setOpenAddPurchase(false);
+  }
+
+  /***** ADD PAYMENT DIALOG FUNCTIONS *****/  
+  const handleAddPaymentButtonClick = () => {
+    setOpenAddPayment(true);
+  }
+
+  const handleAddPaymentCancelButtonClick = () => {
+    setAddPaymentValueInput("");
+    setAddPaymentDescriptionInput("");
+    setOpenAddPayment(false);
+  }
+
+  const handleAddPaymentValueInputChange = (e: BaseSyntheticEvent) => {
+    setAddPaymentValueInput(e.target.value);
+  }
+
+  const handleAddPaymentDescriptionInputChange = (e: BaseSyntheticEvent) => {
+    setAddPaymentDescriptionInput(e.target.value);
   }
 
   const handleAddPaymentConfirmButtonClick = () => {
     if(addPaymentValueInput && addPaymentDescriptionInput) {
+      const id: number = clientEventsLog.length + 1;
+
       const currentDate: string = getCurrentDate();
       const paymentValue: number = Number(addPaymentValueInput);
 
       const clientEvent: ClientEventLogType = {
+        id: id,
         clientId: client.id,
         type: "payment",
         date: currentDate,
@@ -123,14 +130,14 @@ const ClientPage = () => {
         value: toNegative(paymentValue)
       }
 
-      console.log(clientEvent)
-
       const clientEventsLogCopy: ClientEventLogType[] = [clientEvent, ...clientEventsLog ];
 
       calcClientEventsTotal(clientEventsLogCopy);
       setClientEventsLog(clientEventsLogCopy);
     }
     //TODO: add error toast
+    setAddPaymentValueInput("");
+    setAddPaymentDescriptionInput("");
     setOpenAddPayment(false);
   }
 
@@ -146,10 +153,12 @@ const ClientPage = () => {
     //TODO: handle client not found
   }
 
-  useEffect(() => {
-    mockedGetClientById();
+/* eslint-disable react-hooks/exhaustive-deps */
+  useEffect(() => { 
+    mockedGetClientById(); 
     calcClientEventsTotal(clientEventsLog);
   }, []);
+/* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <>
@@ -178,23 +187,11 @@ const ClientPage = () => {
               clientEventsTotal={ clientEventsTotal } 
             />
           </div>
-          <ScrollArea className="w-full h-[calc(100%-24px)]">
-            <Table>
-              <TableBody>
-                {
-                  clientEventsLog.map((clientEvent, i )=> {
-                    return (
-                      <TableRow key={ i }>
-                        <TableCell>
-                          <ClientEventLogItem  clientEvent={ clientEvent } />
-                        </TableCell>
-                      </TableRow> 
-                    )
-                  })
-                }
-              </TableBody>
-            </Table>
-          </ScrollArea>
+          <ClientEventsLog
+            clientEventsLog={clientEventsLog} 
+            setClientEventsLog={ setClientEventsLog }
+            calcClientEventsTotal={ calcClientEventsTotal }        
+          />
         </section>  
 
         <section className="flex justify-between">
@@ -203,63 +200,27 @@ const ClientPage = () => {
         </section>
       </div>
 
-      <Dialog open={ openAddPurchase } onOpenChange={ setOpenAddPurchase }>
-        <DialogContent aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle>Adicionar Compra</DialogTitle>
-          </DialogHeader>
-          <div>
-            <Label htmlFor="purchase-value" className="mb-2">Valor da compra</Label>
-            <Input
-              type="number"
-              id="purchase-value"
-              onChange={ handleAddPurchaseValueInputChange }
-              value={ addPurchaseValueInput }
-            />
-          </div>
-          <div>
-            <Label htmlFor="purchase-description" className="mb-2">Descrição da compra</Label>
-            <Input
-              id="purchase-description"
-              onChange={ handleAddPurchaseDescriptionInputChange }
-              value={ addPurchaseDescriptionInput }
-            />
-          </div>
-          <DialogFooter className="flex-row">
-            <Button variant="secondary" className="w-1/2" onClick={ handleAddPurchaseCancelButtonClick }>Cancelar</Button>
-            <Button className="w-1/2" onClick={ handleAddPurchaseConfirmButtonClick }>Confirmar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddPurchaseDialog 
+        openAddPurchase={ openAddPurchase }
+        setOpenAddPurchase={ setOpenAddPurchase }
+        handleAddPurchaseValueInputChange={ handleAddPurchaseValueInputChange }
+        addPurchaseValueInput={ addPurchaseValueInput }
+        handleAddPurchaseDescriptionInputChange={ handleAddPurchaseDescriptionInputChange }
+        addPurchaseDescriptionInput={ addPurchaseDescriptionInput }
+        handleAddPurchaseCancelButtonClick={ handleAddPurchaseCancelButtonClick }
+        handleAddPurchaseConfirmButtonClick={ handleAddPurchaseConfirmButtonClick }
+      />
 
-      <Dialog open={ openAddPayment } onOpenChange={ setOpenAddPayment }>
-        <DialogContent aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle>Adicionar Pagamento</DialogTitle>
-          </DialogHeader>
-          <div>
-            <Label htmlFor="payment-value" className="mb-2">Valor do pagamento</Label>
-            <Input
-              type="number"
-              id="payment-value"
-              onChange={ handleAddPaymentValueInputChange }
-              value={ addPaymentValueInput }
-            />
-          </div>
-          <div>
-            <Label htmlFor="payment-description" className="mb-2">Descrição do pagamento</Label>
-            <Input
-              id="payment-description"
-              onChange={ handleAddPaymentDescriptionInputChange }
-              value={ addPaymentDescriptionInput }
-            />
-          </div>
-          <DialogFooter className="flex-row">
-            <Button variant="secondary" className="w-1/2" onClick={ handleAddPaymentCancelButtonClick }>Cancelar</Button>
-            <Button className="w-1/2" onClick={ handleAddPaymentConfirmButtonClick }>Confirmar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddPaymentDialog 
+        openAddPayment={ openAddPayment }
+        setOpenAddPayment={ setOpenAddPayment }
+        handleAddPaymentValueInputChange={ handleAddPaymentValueInputChange }
+        addPaymentValueInput={ addPaymentValueInput }
+        handleAddPaymentDescriptionInputChange={ handleAddPaymentDescriptionInputChange }
+        addPaymentDescriptionInput={ addPaymentDescriptionInput }
+        handleAddPaymentCancelButtonClick={ handleAddPaymentCancelButtonClick }
+        handleAddPaymentConfirmButtonClick={ handleAddPaymentConfirmButtonClick }
+      />
     </>
   )
 }

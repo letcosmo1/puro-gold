@@ -1,7 +1,8 @@
 'use client'
 
+import AddClientDialog from "@/components/home/add-client-dialog";
+import EditClientDialog from "@/components/home/edit-client-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -26,6 +27,17 @@ export default function Home() {
 
   const [selectedClientEditId, setSelectedClientEditId] = useState<number | null>(null);
 
+  const handleFilterClientsInputChange = (e: BaseSyntheticEvent) => {
+    const filterWord: string = e.target.value;
+
+    setFilterInput(filterWord);
+
+    setFilteredClients(clients.filter(client => 
+      client.name.toLowerCase().includes(filterWord.toLowerCase()))
+    );
+  }
+
+  /***** EDIT CLIENT DIALOG FUNCTIONS *****/
   const handleEditClientNameInputChange = (e: BaseSyntheticEvent) => {
     setEditClientNameInput(e.target.value);
   }
@@ -37,16 +49,6 @@ export default function Home() {
       setSelectedClientEditId(id);
     }
     //TODO: add error toast
-  }
-
-  const handleFilterClientsInputChange = (e: BaseSyntheticEvent) => {
-    const filterWord: string = e.target.value;
-
-    setFilterInput(filterWord);
-
-    setFilteredClients(clients.filter(client => 
-      client.name.toLowerCase().includes(filterWord.toLowerCase()))
-    );
   }
 
   const handleEditClientConfirmButtonClick = () => {
@@ -73,6 +75,7 @@ export default function Home() {
     setOpenEditClient(false);
   }
 
+  /***** ADD CLIENT DIALOG FUNCTIONS *****/
   const handleAddClientButtonClick = () => {
     setOpenAddClient(true);
   }
@@ -141,45 +144,23 @@ export default function Home() {
         <Button onClick={ handleAddClientButtonClick } className="w-full">Adicionar Cliente</Button>
       </div>
 
-      <Dialog open={ openEditClient } onOpenChange={ setOpenEditClient }>
-        <DialogContent aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle>Editar nome do cliente</DialogTitle>
-          </DialogHeader>
-          <div>
-            <Label htmlFor="new-client-name" className="mb-2">Novo nome</Label>
-            <Input 
-              id="new-client-name" 
-              onChange={ handleEditClientNameInputChange } 
-              value={ editClientNameInput }
-            />
-          </div>
-          <DialogFooter className="flex-row">
-            <Button variant="secondary" className="w-1/2" onClick={ handleEditClientCancelButtonClick }>Cancelar</Button>
-            <Button className="w-1/2" onClick={ handleEditClientConfirmButtonClick }>Confirmar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddClientDialog 
+        openAddClient={ openAddClient }
+        setOpenAddClient={ setOpenAddClient }
+        handleAddClientNameInputChange={ handleAddClientNameInputChange }
+        addClientNameInput={ addClientNameInput } 
+        handleAddClientCancelButtonClick={ handleAddClientCancelButtonClick }
+        handleAddClientConfirmButtonClick={ handleAddClientConfirmButtonClick }
+      />
 
-      <Dialog open={ openAddClient } onOpenChange={ setOpenAddClient }>
-        <DialogContent aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle>Adicionar cliente</DialogTitle>
-          </DialogHeader>
-          <div>
-            <Label htmlFor="client-name" className="mb-2">Nome</Label>
-            <Input 
-              id="client-name" 
-              onChange={ handleAddClientNameInputChange }
-              value={ addClientNameInput }
-            />
-          </div>
-          <DialogFooter className="flex-row">
-            <Button variant="secondary" className="w-1/2" onClick={ handleAddClientCancelButtonClick }>Cancelar</Button>
-            <Button className="w-1/2" onClick={ handleAddClientConfirmButtonClick }>Confirmar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <EditClientDialog 
+        openEditClient={ openEditClient }
+        setOpenEditClient={ setOpenEditClient }
+        handleEditClientNameInputChange={ handleEditClientNameInputChange }
+        editClientNameInput={ editClientNameInput } 
+        handleEditClientCancelButtonClick={ handleEditClientCancelButtonClick }
+        handleEditClientConfirmButtonClick={ handleEditClientConfirmButtonClick }
+      />
     </>
   );
 }
