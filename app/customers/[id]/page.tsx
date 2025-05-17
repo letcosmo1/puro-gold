@@ -16,7 +16,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 
-const CustomerPage = () => {
+const CustomerDetailPage = () => {
   const params = useParams();
   const customerIdParam: ParamValue = params.id;
 
@@ -165,7 +165,7 @@ const CustomerPage = () => {
       <div className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
         <section>
           <nav className="flex justify-end">
-            <Link href="/">
+            <Link href="/customers">
               <X/>
             </Link>
           </nav>
@@ -225,4 +225,4 @@ const CustomerPage = () => {
   )
 }
 
-export default CustomerPage
+export default CustomerDetailPage
