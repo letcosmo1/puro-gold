@@ -5,7 +5,7 @@ import Link from "next/link";
 const Home = () => {
 
   return (
-    <div className="relative h-screen bg-svg-top bg-svg-bottom overflow-hidden">
+    <div className="relative h-dvh bg-svg-top bg-svg-bottom overflow-hidden">
       <div className="relative z-10 p-4 h-full">
         <main className="h-full flex flex-col justify-center items-center">
           <Image 

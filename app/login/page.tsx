@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 const LoginPage = () => {
   return (
-    <div className="relative h-screen">
+    <div className="relative h-dvh">
       <div className="relative z-10 h-full">
         <main className="h-full flex flex-col justify-center items-center p-8">
           <Image 
