@@ -18,12 +18,12 @@ const LoginPage = () => {
             className="w-full mb-12"
           />
           <div className="w-full">
-            <Label htmlFor="customer-name" className="mb-2 text-zinc-400 font-normal">Email</Label>
-            <Input />
+            <Label htmlFor="email" className="mb-2 text-zinc-400 font-normal">Email</Label>
+            <Input id="email"/>
           </div>
           <div className="w-full mt-6">
-            <Label htmlFor="customer-name" className="mb-2 text-zinc-400 font-normal">Senha</Label>
-            <Input />
+            <Label htmlFor="password" className="mb-2 text-zinc-400 font-normal">Senha</Label>
+            <Input id="password" type="password" />
           </div>
           <Link href="/customers" className="w-full mt-12">
             <Button className="w-full">Entrar</Button>

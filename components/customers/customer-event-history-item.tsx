@@ -32,7 +32,7 @@ const CustomerEventHistoryItem = ({ customerEvent, handleEditCustomerEventButton
         <p>{ getEventDescription() }</p>
       </div>
       <DropdownMenu>
-        <DropdownMenuTrigger className="flex h-fit"><EllipsisVertical /></DropdownMenuTrigger>
+        <DropdownMenuTrigger className="flex h-fit"><EllipsisVertical className="text-primary" /></DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onSelect={ () => handleEditCustomerEventButtonClick(customerEvent) }>Editar</DropdownMenuItem>
         </DropdownMenuContent>

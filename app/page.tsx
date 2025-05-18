@@ -15,7 +15,7 @@ const Home = () => {
             height="224"
           />
           <Link href="/login">
-            <Button className="w-48 mt-8 bg-primary">Entrar</Button>
+            <Button className="w-48 mt-8 bg-primary">ADM</Button>
           </Link>
         </main>
       </div>
