@@ -1,7 +1,7 @@
 'use client'
 
-import AddCustomerDialog from "@/components/home/add-customer-dialog";
-import EditCustomerDialog from "@/components/home/edit-customer-dialog";
+import AddCustomerDialog from "@/components/customers/add-customer-dialog";
+import EditCustomerDialog from "@/components/customers/edit-customer-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -127,7 +127,7 @@ const CustomersPage = () => {
                     return (
                       <TableRow key={ customer.id }>
                         <TableCell className="flex justify-between py-4">
-                          <Link href={`/customer/${customer.id}`}>
+                          <Link href={`/customers/${customer.id}`}>
                             <p>{ customer.name }</p>
                           </Link>
                           <Settings2 onClick={ () => handleEditCustomerButtonClick(customer.id, customer.name) } />

@@ -1,9 +1,9 @@
 'use client'
 
-import AddPaymentDialog from '@/components/customer/add-payment-dialog'
-import AddPurchaseDialog from '@/components/customer/add-purchase-dialog'
-import CustomerEventsHistory from '@/components/customer/customer-events-history'
-import PdfButtons from '@/components/customer/pdf-buttons'
+import AddPaymentDialog from '@/components/customers/add-payment-dialog'
+import AddPurchaseDialog from '@/components/customers/add-purchase-dialog'
+import CustomerEventsHistory from '@/components/customers/customer-events-history'
+import PdfButtons from '@/components/customers/pdf-buttons'
 import { Button } from '@/components/ui/button'
 import { mockedCustomerEventHistory, mockedCustomers } from '@/mocked-data/customer-data'
 import { CustomerEvent, Customer } from '@/types/customer'
