@@ -162,7 +162,7 @@ const CustomerDetailPage = () => {
 
   return (
     <main>
-      <div className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
+      <div className="flex flex-col justify-between h-[calc(dvh-var(--header-height)-var(--spacing)*8)]">
         <section>
           <nav className="flex justify-end">
             <Link href="/customers">
