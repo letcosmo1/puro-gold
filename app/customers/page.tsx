@@ -130,7 +130,7 @@ const CustomersPage = () => {
                           <Link href={`/customers/${customer.id}`}>
                             <p>{ customer.name }</p>
                           </Link>
-                          <Settings2 onClick={ () => handleEditCustomerButtonClick(customer.id, customer.name) } />
+                          <Settings2 className="text-primary" onClick={ () => handleEditCustomerButtonClick(customer.id, customer.name) } />
                         </TableCell>
                       </TableRow>
                     )

@@ -166,7 +166,7 @@ const CustomerDetailPage = () => {
         <section>
           <nav className="flex justify-end">
             <Link href="/customers">
-              <X/>
+              <X className="text-primary"/>
             </Link>
           </nav>
           <h2 className="font-medium text-sm">Cliente</h2>
