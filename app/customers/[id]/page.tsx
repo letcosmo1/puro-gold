@@ -161,7 +161,7 @@ const CustomerDetailPage = () => {
 /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
-    <>
+    <main>
       <div className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
         <section>
           <nav className="flex justify-end">
@@ -221,7 +221,7 @@ const CustomerDetailPage = () => {
         handleAddPaymentCancelButtonClick={ handleAddPaymentCancelButtonClick }
         handleAddPaymentConfirmButtonClick={ handleAddPaymentConfirmButtonClick }
       />
-    </>
+    </main>
   )
 }
 

@@ -106,7 +106,7 @@ const CustomersPage = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
+      <main className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
         <div>
           <Label htmlFor="search-customer" className="mb-2">Pesquisar</Label>
           <Input 
@@ -142,7 +142,7 @@ const CustomersPage = () => {
         </div>
 
         <Button onClick={ handleAddCustomerButtonClick } className="w-full">Adicionar Cliente</Button>
-      </div>
+      </main>
 
       <AddCustomerDialog 
         openAddCustomer={ openAddCustomer }
