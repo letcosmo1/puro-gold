@@ -106,7 +106,7 @@ const CustomersPage = () => {
 
   return (
     <>
-      <main className="p-4 flex flex-col justify-between h-[calc(100dvh-var(--header-height)-var(--spacing)*8)]">
+      <main className="p-4 flex flex-col justify-between h-[calc(100dvh-var(--header-height))]">
         <div>
           <Label htmlFor="search-customer" className="mb-2">Pesquisar</Label>
           <Input 
