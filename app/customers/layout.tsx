@@ -6,14 +6,12 @@ const CustomersLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <html lang="pt-br">
-      <body>
-        <Header />
-        <main className="p-4">
-          {children}
-        </main>
-      </body>
-    </html>
+    <>
+      <Header />
+      <main className="p-4">
+        {children}
+      </main>
+    </>
   );
 }
 
