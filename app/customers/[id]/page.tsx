@@ -161,8 +161,8 @@ const CustomerDetailPage = () => {
 /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
-    <main>
-      <div className="flex flex-col justify-between h-[calc(dvh-var(--header-height)-var(--spacing)*8)]">
+    <main className="p-4">
+      <div className="flex flex-col justify-between h-[calc(100dvh-var(--header-height)-var(--spacing)*8)]">
         <section>
           <nav className="flex justify-end">
             <Link href="/customers">
