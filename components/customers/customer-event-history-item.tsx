@@ -1,4 +1,4 @@
-import { CustomerEvent } from '@/types/customer'
+import { CustomerEvent } from '@/types/entities/customer'
 import { toBrazilianCurrency } from '@/util/currency-format'
 import { toPositive } from '@/util/math'
 import React from 'react'

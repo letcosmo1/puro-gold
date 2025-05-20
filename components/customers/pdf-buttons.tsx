@@ -1,4 +1,4 @@
-import { CustomerEvent, Customer } from '@/types/customer';
+import { CustomerEvent, Customer } from '@/types/entities/customer';
 import { toBrazilianCurrency } from '@/util/currency-format';
 import { formatDate, getCurrentDateTime } from '@/util/date-format';
 import { toPositive } from '@/util/math';
