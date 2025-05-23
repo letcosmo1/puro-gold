@@ -4,6 +4,6 @@ export type ApiResponse<T> = {
   data: T;
 };
 
-export type DefaultApiData = {
+export type DefaultApiResponse = {
   errorMessage?: string
 }

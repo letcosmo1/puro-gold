@@ -23,3 +23,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ data: { errorMessage: "Erro ao inserir token." }}, { status: 500 });
   }
 }
+
+export async function DELETE() {
+  console.log("here");
+
+  try {
+    const cookieStore = await cookies();
+
+    cookieStore.set({
+      name: "token",
+      value: "",
+      maxAge: 0,
+      path: "/",
+    });
+
+    return new NextResponse(null, { status: 204 }); 
+  } catch (error) {
+    console.error("Logout error:", error);
+    return NextResponse.json({ data: { errorMessage: "Erro ao remover o token."}},{ status: 500 });
+  }
+}

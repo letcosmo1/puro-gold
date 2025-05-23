@@ -2,17 +2,17 @@ import { ApiResponse } from "@/types/api/api-response";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
 
-type RequestOptions = {
+type RequestOptions<TBody> = {
   method: Method;
-  body?: any;
+  body?: TBody;
   token?: string;
 }
 
-export const request = async <T>(
+export const request = async <TResponse, TBody>(
   endpoint: string,
-  { method, body, token }: RequestOptions,
+  { method, body, token }: RequestOptions<TBody>,
   options?: { internalRequest: boolean }
-): Promise<ApiResponse<T>> => {
+): Promise<ApiResponse<TResponse>> => {
 
   const headers: HeadersInit = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = `Bearer ${token}`;
@@ -28,9 +28,9 @@ export const request = async <T>(
     ...(body && { body: JSON.stringify(body) }),
   });
 
-  const data: T = res.status === 204 ? ({} as T) : await res.json();
+  const data: TResponse = res.status === 204 ? ({} as TResponse) : await res.json();
 
-  const response: ApiResponse<T> = {
+  const response: ApiResponse<TResponse> = {
     ok: res.ok,
     status: res.status,
     data: data

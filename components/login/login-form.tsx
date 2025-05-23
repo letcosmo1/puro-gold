@@ -6,8 +6,8 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
 import { request } from '@/lib/api'
-import { LoginData } from '@/types/api/auth'
-import { DefaultApiData } from '@/types/api/api-response'
+import { LoginBody, LoginResponse } from '@/types/api/auth'
+import { DefaultApiResponse } from '@/types/api/api-response'
 
 const LoginForm = () => {
   const router = useRouter();
@@ -30,7 +30,7 @@ const LoginForm = () => {
     setEmail("");
     setPassword("");
 
-    const loginResult = await request<LoginData>("auth/login", {
+    const loginResult = await request<LoginResponse, LoginBody>("auth/login", {
       method: "POST",
       body: { email, password },
     });
@@ -41,7 +41,7 @@ const LoginForm = () => {
       return
     }
 
-    const tokenCookieResult = await request<DefaultApiData>("api/token", {
+    const tokenCookieResult = await request<DefaultApiResponse, { token: string }>("/api/token", {
       method: "POST",
       body: { token: loginResult.data.token },
     }, { internalRequest: true });
