@@ -6,7 +6,7 @@ import CustomerEventsHistory from '@/components/customers/customer-events-histor
 import PdfButtons from '@/components/customers/pdf-buttons'
 import { Button } from '@/components/ui/button'
 import { mockedCustomerEventHistory, mockedCustomers } from '@/mocked-data/customer-data'
-import { CustomerEvent, Customer } from '@/types/customer'
+import { CustomerEvent, Customer } from '@/types/entities/customer'
 import { toBrazilianCurrency } from '@/util/currency-format'
 import { getCurrentDate } from '@/util/date-format'
 import { toNegative, toPositive } from '@/util/math'

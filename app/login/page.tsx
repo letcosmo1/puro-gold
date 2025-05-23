@@ -1,9 +1,6 @@
 import React from 'react'
 import Image from "next/image";
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import LoginForm from '@/components/login/login-form';
 
 const LoginPage = () => {
   return (
@@ -17,20 +14,9 @@ const LoginPage = () => {
             height="52"
             className="w-full mb-12"
           />
-          <div className="w-full">
-            <Label htmlFor="email" className="mb-2 text-zinc-400 font-normal">Email</Label>
-            <Input id="email"/>
-          </div>
-          <div className="w-full mt-6">
-            <Label htmlFor="password" className="mb-2 text-zinc-400 font-normal">Senha</Label>
-            <Input id="password" type="password" />
-          </div>
-          <Link href="/customers" className="w-full mt-12">
-            <Button className="w-full">Entrar</Button>
-          </Link>
+          <LoginForm />
         </main>
       </div>
-
       <div className="z-0 w-full h-[40vh] absolute bottom-0 bg-gradient-to-b from-white to-[#CF2395BF]"></div>
     </div>
   )

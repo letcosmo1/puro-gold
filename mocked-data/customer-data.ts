@@ -1,4 +1,4 @@
-import { CustomerEvent, Customer } from "@/types/customer";
+import { CustomerEvent, Customer } from "@/types/entities/customer";
 
 export const mockedCustomers: Customer[] = [
   { id: 1, name: 'Alice Johnson' },

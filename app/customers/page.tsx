@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { mockedCustomers } from "@/mocked-data/customer-data";
-import { Customer } from "@/types/customer";
+import { Customer } from "@/types/entities/customer";
 import { Settings2 } from "lucide-react";
 import Link from "next/link";
 import { BaseSyntheticEvent, useState } from "react";
