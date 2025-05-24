@@ -7,7 +7,6 @@ import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
 import { request } from '@/lib/api'
 import { LoginBody, LoginResponse } from '@/types/api/auth'
-import { DefaultApiResponse } from '@/types/api/api-response'
 
 const LoginForm = () => {
   const router = useRouter();
