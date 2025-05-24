@@ -6,25 +6,35 @@ import { Button } from "../ui/button";
 
 type PropTypes = {
   openAddCustomer: boolean,
-  setOpenAddCustomer: React.Dispatch<boolean>,
-  handleAddCustomerNameInputChange: (e: React.BaseSyntheticEvent) => void,
-  addCustomerNameInput: string,
   handleAddCustomerCancelButtonClick: () => void,
-  handleAddCustomerConfirmButtonClick: () => void
+  handleAddCustomerConfirmButtonClick: (name: string) => void
 }
 
 const AddCustomerDialog = (props: PropTypes) => {
   const { 
     openAddCustomer, 
-    setOpenAddCustomer,
-    handleAddCustomerNameInputChange,
-    addCustomerNameInput,
     handleAddCustomerCancelButtonClick,
     handleAddCustomerConfirmButtonClick
   } = props;
 
+  const [name, setName]= React.useState("");
+
+  const handleNameInputChange = (e: React.BaseSyntheticEvent) => {
+    setName(e.target.value);
+  }
+
+  const handleConfirmButtonClick = (name: string) => {
+    setName("");
+    handleAddCustomerConfirmButtonClick(name);
+  }
+
+  const handleCancelButtonClick = () => {
+    setName("");
+    handleAddCustomerCancelButtonClick();
+  }
+
   return (
-    <Dialog open={ openAddCustomer } onOpenChange={ setOpenAddCustomer }>
+    <Dialog open={ openAddCustomer }>
       <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Adicionar cliente</DialogTitle>
@@ -33,13 +43,13 @@ const AddCustomerDialog = (props: PropTypes) => {
           <Label htmlFor="customer-name" className="mb-2">Nome</Label>
           <Input 
             id="customer-name" 
-            onChange={ handleAddCustomerNameInputChange }
-            value={ addCustomerNameInput }
+            onChange={ handleNameInputChange }
+            value={ name }
           />
         </div>
         <DialogFooter className="flex-row">
-          <Button variant="secondary" className="w-1/2" onClick={ handleAddCustomerCancelButtonClick }>Cancelar</Button>
-          <Button className="w-1/2" onClick={ handleAddCustomerConfirmButtonClick }>Confirmar</Button>
+          <Button variant="secondary" className="w-1/2" onClick={ handleCancelButtonClick }>Cancelar</Button>
+          <Button className="w-1/2" onClick={ () => handleConfirmButtonClick(name) }>Confirmar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
