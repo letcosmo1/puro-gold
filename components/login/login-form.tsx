@@ -30,27 +30,18 @@ const LoginForm = () => {
     setEmail("");
     setPassword("");
 
-    const loginResult = await request<LoginResponse, LoginBody>("auth/login", {
+    const result = await request<LoginResponse, LoginBody>("auth/login", {
       method: "POST",
       body: { email, password },
     });
 
-    if (!loginResult.ok) {
-      alert(loginResult.data.errorMessage || "Login failed");
+    if (!result.ok) {
+      alert(result.data.errorMessage || "Login failed");
       //TODO: add toast for error
       return
     }
 
-    const tokenCookieResult = await request<DefaultApiResponse, { token: string }>("/api/token", {
-      method: "POST",
-      body: { token: loginResult.data.token },
-    }, { internalRequest: true });
-
-    if(!tokenCookieResult.ok) {
-      alert(tokenCookieResult.data.errorMessage || "Login failed");
-      //TODO: add toast for error
-      return
-    }
+    document.cookie = `token=${result.data.token}; path=/; max-age=7200; SameSite=Lax`;
 
     router.push("/customers");
     //TODO: add success toast

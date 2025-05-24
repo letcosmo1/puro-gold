@@ -4,7 +4,7 @@ export type LoginResponse = {
     id: string,
     email: string
   },
-  token: string
+  token?: string
 }
 
 export type LoginBody = {

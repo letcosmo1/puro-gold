@@ -10,17 +10,14 @@ type RequestOptions<TBody> = {
 
 export const request = async <TResponse, TBody>(
   endpoint: string,
-  { method, body, token }: RequestOptions<TBody>,
-  options?: { internalRequest: boolean }
+  { method, body, token }: RequestOptions<TBody>
 ): Promise<ApiResponse<TResponse>> => {
 
   const headers: HeadersInit = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  let url: string = `${baseUrl}/${endpoint}`;
-
-  if(options?.internalRequest) url = endpoint;
+  const url: string = `${baseUrl}/${endpoint}`;
 
   const res = await fetch(url, {
     method,
