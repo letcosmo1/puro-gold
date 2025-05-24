@@ -1,7 +1,5 @@
 'use client'
 
-import { request } from '@/lib/api';
-import { DefaultApiResponse } from '@/types/api/api-response';
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 import React from 'react'
@@ -10,18 +8,7 @@ const LogoutButton = () => {
   const router = useRouter();
 
   const handleLogoutButtonClick = async () => {
-    const logoutResult = await request<DefaultApiResponse, null>(
-      "/api/token", 
-      { method: "DELETE" }, 
-      { internalRequest: true }
-    );
-
-    if (!logoutResult.ok) {
-      alert(logoutResult.data.errorMessage || "Logout failed");
-      //TODO: add toast for error
-      return
-    }
-
+    document.cookie = "token=; path=/; max-age=0";
     router.push("/");
     //TODO: add success toast
   }
