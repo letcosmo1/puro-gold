@@ -13,6 +13,7 @@ import CustomerTableRow from "@/components/customers/customer-table-row";
 import { request } from "@/lib/api";
 import { ApiErrorResponse } from "@/types/api/api-response";
 import { getCookie } from "@/lib/get-cookie";
+import { toast, ToastContainer } from "react-toastify";
 
 const CustomersPage = () => {
   const [openEditCustomer, setOpenEditCustomer] = React.useState<boolean>(false);
@@ -35,18 +36,17 @@ const CustomersPage = () => {
 
   /***** EDIT CUSTOMER DIALOG FUNCTIONS *****/
   const handleEditCustomerButtonClick = (customer: Customer) => {
-    if(customer.id && customer.name) {
-      setSelectedEditClient(customer);
-      setOpenEditCustomer(true);
+    if(!customer.id || !customer.name) {
+      toast.error("Erro ao abrir janela de edição de cliente.");
+      return
     }
-    //TODO: add error toast
+    setSelectedEditClient(customer);
+    setOpenEditCustomer(true);
   }
 
   const handleEditCustomerConfirmButtonClick = () => {
     if(!selectedEditClient.id || !selectedEditClient.name) {
-      alert("Campos inválidos.")
-      //TODO: add error toast
-      setOpenEditCustomer(false);
+      toast.warning("Dados inválidos.");
       return
     }
 
@@ -55,18 +55,18 @@ const CustomersPage = () => {
       { method: "PATCH", token: token, body: { name: selectedEditClient.name } }
     ).then(result => {
       if(!result.data.success) {
-        alert(result.data.errorMessage);
-        //TODO: add toast for error
+        toast.error(result.data.errorMessage);
         return
       }
 
       const customersCopy: Customer[] = [...customers];
       const customersUpdated: Customer[] = customersCopy.map(customer => 
-        customer.id === selectedEditClient.id ? selectedEditClient : customer
+        customer.id === selectedEditClient.id ? 
+        selectedEditClient : customer 
       );
+
       setCustomers(customersUpdated);
       setFilteredCustomers(customersUpdated);
-      //TODO: add toast for success
     });
     
     setOpenEditCustomer(false);
@@ -85,9 +85,7 @@ const CustomersPage = () => {
 
   const handleAddCustomerConfirmButtonClick = (name: string) => {
     if(!name) {
-      //TODO: add error toast
-      alert("Nome inválido.");
-      setOpenAddCustomer(false);
+      toast.warning("Dados inválidos.")
       return
     }
 
@@ -96,14 +94,12 @@ const CustomersPage = () => {
       { method: "POST", token: token, body: { name } }
     ).then(result => {
       if(!result.data.success) {
-        alert(result.data.errorMessage);
-        //TODO: add toast for error
+        toast.error(result.data.errorMessage);
         return
       }
       const customersCopy: Customer[] = [...customers, result.data.customer];
       setCustomers(customersCopy);
       setFilteredCustomers(customersCopy);
-      //TODO: add toast for success
     });
 
     setFilterInput("");
@@ -116,8 +112,7 @@ const CustomersPage = () => {
       { method: "GET", token: token }
     ).then(result => {
       if(!result.data.success) {
-        alert(result.data.errorMessage);
-        //TODO: add toast for error
+        toast.error(result.data.errorMessage);
         return
       }
       setCustomers(result.data.customers);
@@ -127,6 +122,7 @@ const CustomersPage = () => {
 
   return (
     <>
+    <ToastContainer autoClose={ 2000 } />
       <main className="p-4 flex flex-col justify-between h-[calc(100dvh-var(--header-height))]">
         <div>
           <Label htmlFor="search-customer" className="mb-2">Pesquisar</Label>
