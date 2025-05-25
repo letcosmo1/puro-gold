@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types/api/api-response";
 
-type Method = "GET" | "POST" | "PUT" | "DELETE";
+type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 type RequestOptions<TBody> = {
   method: Method;

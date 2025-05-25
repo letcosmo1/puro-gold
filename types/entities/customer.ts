@@ -12,3 +12,31 @@ export type CustomerEvent = {
   value: number
   createdAt: Date
 }
+
+export type NewCustomerData = {
+  name: string
+}
+
+export type UpdateCustomerData = {
+  name: string
+}
+
+export type CustomerResponse = {
+  success: true,
+  customer: Customer
+}
+
+export type CustomerCreateResponse = {
+  success: true,
+  customer: Customer
+}
+
+export type CustomerUpdateResponse = {
+  success: true,
+  customer: Customer
+}
+
+export type CustomerListResponse = {
+  success: true,
+  customers: Customer[]
+}
