@@ -1,6 +1,6 @@
 import React from 'react'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
-import { Customer, CustomerEvent } from '@/types/entities/customer';
+import { CustomerEvent } from '@/types/entities/customer';
 import { Label } from '@radix-ui/react-label';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';

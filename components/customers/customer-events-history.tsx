@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useState } from 'react'
+import React from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '../ui/table'
 import { CustomerEvent, CustomerEventUpdateResponse, UpdateCustomerEventData } from '@/types/entities/customer'
@@ -33,8 +33,8 @@ const CustomerEventsHistory = (props: PropTypes) => {
     calcCustomerEventsTotal
   } = props
 
-  const [openEditCustomerEvent, setOpenEditCustomerEvent] = useState<boolean>(false);
-  const [selectedEditCustomerEvent, setSelectedEditCustomerEvent] = useState<CustomerEvent>(initializeCustomerEvent);
+  const [openEditCustomerEvent, setOpenEditCustomerEvent] = React.useState<boolean>(false);
+  const [selectedEditCustomerEvent, setSelectedEditCustomerEvent] = React.useState<CustomerEvent>(initializeCustomerEvent);
 
   const handleEditCustomerEventButtonClick = (customerEvent: CustomerEvent) => {
     setOpenEditCustomerEvent(true);
@@ -95,14 +95,14 @@ const CustomerEventsHistory = (props: PropTypes) => {
         <TableBody>
           { customerEventsHistory.map((customerEvent, i )=> {
             return (
-              <TableRow key={ i } >
+            <TableRow key={ i } >
               <TableCell className="py-2 pl-2 pr-0">
                 <CustomerEventHistoryItem  
                   customerEvent={ customerEvent } 
                   handleEditCustomerEventButtonClick={ handleEditCustomerEventButtonClick }
                 />
               </TableCell>
-              </TableRow> 
+            </TableRow> 
             )
           })}
         </TableBody>

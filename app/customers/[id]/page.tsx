@@ -143,10 +143,12 @@ const CustomerDetailPage = () => {
     setOpenAddPayment(false);
   }
 
+/* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => { 
     getCustomer(); 
     getCustomerEvents();
   }, []);
+/* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <>

@@ -4,7 +4,7 @@ import { toPositive } from '@/util/math'
 import React from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { EllipsisVertical } from 'lucide-react'
-import { formatDate, formatStringToDate } from '@/util/date-format'
+import { formatStringToDate } from '@/util/date-format'
 
 type PropTypes = {
   customerEvent: CustomerEvent,
