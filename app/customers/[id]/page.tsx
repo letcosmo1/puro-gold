@@ -1,227 +1,209 @@
 'use client'
 
+import React from 'react'
+import Link from 'next/link'
 import AddPaymentDialog from '@/components/customers/add-payment-dialog'
 import AddPurchaseDialog from '@/components/customers/add-purchase-dialog'
 import CustomerEventsHistory from '@/components/customers/customer-events-history'
 import PdfButtons from '@/components/customers/pdf-buttons'
 import { Button } from '@/components/ui/button'
-import { mockedCustomerEventHistory, mockedCustomers } from '@/mocked-data/customer-data'
-import { CustomerEvent, Customer } from '@/types/entities/customer'
+import { request } from '@/lib/api'
+import { getCookie } from '@/lib/get-cookie'
+import { ApiErrorResponse } from '@/types/api/api-response'
+import { CustomerEvent, Customer, NewCustomerEventData, CustomerEventCreateResponse, CustomerResponse, CustomerEventListResponse } from '@/types/entities/customer'
 import { toBrazilianCurrency } from '@/util/currency-format'
 import { getCurrentDate } from '@/util/date-format'
 import { toNegative, toPositive } from '@/util/math'
 import { X } from 'lucide-react'
 import { ParamValue } from 'next/dist/server/request/params'
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const CustomerDetailPage = () => {
   const params = useParams();
   const customerIdParam: ParamValue = params.id;
 
-  const [customer, setCustomer] = useState<Customer>({ id: 0, name: "" });
+  const [customer, setCustomer] = React.useState<Customer>({ id: 0, name: "" });
 
-  const [customerEventsHistory, setCustomerEventsHistory] = useState<CustomerEvent[]>(mockedCustomerEventHistory);
+  const [customerEventsHistory, setCustomerEventsHistory] = React.useState<CustomerEvent[]>([]);
+  const [customerEventsTotal, setCustomerEventsTotal] = React.useState<number | null>(null);
 
-  const [customerEventsTotal, setCustomerEventsTotal] = useState<number | null>(null);
+  const [openAddPurchase, setOpenAddPurchase] = React.useState<boolean>(false);
+  const [openAddPayment, setOpenAddPayment] = React.useState<boolean>(false);
 
-  const [openAddPurchase, setOpenAddPurchase] = useState<boolean>(false);
-  const [openAddPayment, setOpenAddPayment] = useState<boolean>(false);
+  const getCustomer = () => {
+    const customerId: string = String(customerIdParam);
 
-  const [addPurchaseValueInput, setAddPurchaseValueInput] = useState<string>("");
-  const [addPurchaseDescriptionInput, setAddPurchaseDescriptionInput] = useState<string>("");
-
-  const [addPaymentValueInput, setAddPaymentValueInput] = useState<string>("");
-  const [addPaymentDescriptionInput, setAddPaymentDescriptionInput] = useState<string>("");
-
-  const calcCustomerEventsTotal = (localCustomerEventsLog: CustomerEvent[]) => {
-    if(localCustomerEventsLog.length === 0) return
-
-    let total = 0;
-
-    localCustomerEventsLog.forEach(customerEvent => {
-      total += customerEvent.value;
+    const token = getCookie("token");
+    request<CustomerResponse | ApiErrorResponse, null>(`customers/${customerId}`, 
+      { method: "GET", token: token }
+    ).then(result => {
+      if(!result.data.success) {
+        toast.error(result.data.errorMessage);
+        return
+      }
+      setCustomer(result.data.customer);
     });
+  }
 
+  const getCustomerEvents = () => {
+    const customerId: string = String(customerIdParam);
+
+    const token = getCookie("token");
+    request<CustomerEventListResponse | ApiErrorResponse, null>(`customer-events/${customerId}`, 
+      { method: "GET", token: token }
+    ).then(result => {
+      if(!result.data.success) {
+        toast.error(result.data.errorMessage);
+        return
+      }
+      setCustomerEventsHistory(result.data.customerEvents);
+      calcCustomerEventsTotal(result.data.customerEvents);
+    });
+  }
+
+  const calcCustomerEventsTotal = (customerEvents: CustomerEvent[]) => {
+    if(customerEvents.length === 0) return
+    let total = 0;
+    customerEvents.forEach(event => total += event.value);
     setCustomerEventsTotal(total);
   }
 
   /***** ADD PURCHASE DIALOG FUNCTIONS *****/
-  const handleAddPurchaseButtonClick = () => {
-    setOpenAddPurchase(true);
-  }
+  const handleAddPurchaseButtonClick = () => setOpenAddPurchase(true);
+  const handleAddPurchaseCancelButtonClick = () => setOpenAddPurchase(false);
 
-  const handleAddPurchaseCancelButtonClick = () => {
-    setAddPurchaseValueInput("");
-    setAddPurchaseDescriptionInput("");
-    setOpenAddPurchase(false);
-  }
+  const handleAddPurchaseConfirmButtonClick = (description: string, value: string) => {
+    if(!description || !value) {
+      toast.warning("Dados inválidos");
+      return
+    }
+    
+    const currentDate: string = getCurrentDate();
+    const numberValue: number = Number(value);
+    const customerEvent: NewCustomerEventData = {
+      customerId: customer.id,
+      type: "purchase",
+      date: currentDate,
+      description: description,
+      createdAt: new Date,
+      value: toPositive(numberValue)
+    }
 
-  const handleAddPurchaseValueInputChange = (e: BaseSyntheticEvent) => {
-    setAddPurchaseValueInput(e.target.value);
-  }
-
-  const handleAddPurchaseDescriptionInputChange = (e: BaseSyntheticEvent) => {
-    setAddPurchaseDescriptionInput(e.target.value);
-  }
-
-  const handleAddPurchaseConfirmButtonClick = () => {
-    if(addPurchaseValueInput && addPurchaseDescriptionInput) {
-      const id: number = customerEventsHistory.length + 1;
-
-      const currentDate: string = getCurrentDate();
-      const purchaseValue: number = Number(addPurchaseValueInput);
-
-      const customerEvent: CustomerEvent = {
-        id: id,
-        customerId: customer.id,
-        type: "purchase",
-        date: currentDate,
-        description: addPurchaseDescriptionInput,
-        createdAt: new Date,
-        value: toPositive(purchaseValue)
+    const token = getCookie("token");
+    request<CustomerEventCreateResponse | ApiErrorResponse, NewCustomerEventData>("customer-events", 
+      { method: "POST", token: token, body: customerEvent }
+    ).then(result => {
+      if(!result.data.success) {
+        toast.error(result.data.errorMessage);
+        return
       }
-
-      const customerEventsLogCopy: CustomerEvent[] = [customerEvent, ...customerEventsHistory ];
-
+      const customerEventsLogCopy: CustomerEvent[] = [result.data.customerEvent, ...customerEventsHistory ];
       calcCustomerEventsTotal(customerEventsLogCopy);
       setCustomerEventsHistory(customerEventsLogCopy);
-    }
-    //TODO: add error toast
-    setAddPurchaseValueInput("");
-    setAddPurchaseDescriptionInput("");
+    });
+
     setOpenAddPurchase(false);
   }
 
   /***** ADD PAYMENT DIALOG FUNCTIONS *****/  
-  const handleAddPaymentButtonClick = () => {
-    setOpenAddPayment(true);
-  }
+  const handleAddPaymentButtonClick = () => setOpenAddPayment(true);
+  const handleAddPaymentCancelButtonClick = () => setOpenAddPayment(false);
 
-  const handleAddPaymentCancelButtonClick = () => {
-    setAddPaymentValueInput("");
-    setAddPaymentDescriptionInput("");
-    setOpenAddPayment(false);
-  }
+  const handleAddPaymentConfirmButtonClick = (description: string, value: string) => {
+    if(!description || !value) {
+      toast.warning("Dados inválidos");
+      return
+    }
+    
+    const currentDate: string = getCurrentDate();
+    const numberValue: number = Number(value);
+    const customerEvent: NewCustomerEventData = {
+      customerId: customer.id,
+      type: "payment",
+      date: currentDate,
+      description: description,
+      createdAt: new Date,
+      value: toNegative(numberValue)
+    }
 
-  const handleAddPaymentValueInputChange = (e: BaseSyntheticEvent) => {
-    setAddPaymentValueInput(e.target.value);
-  }
-
-  const handleAddPaymentDescriptionInputChange = (e: BaseSyntheticEvent) => {
-    setAddPaymentDescriptionInput(e.target.value);
-  }
-
-  const handleAddPaymentConfirmButtonClick = () => {
-    if(addPaymentValueInput && addPaymentDescriptionInput) {
-      const id: number = customerEventsHistory.length + 1;
-
-      const currentDate: string = getCurrentDate();
-      const paymentValue: number = Number(addPaymentValueInput);
-
-      const customerEvent: CustomerEvent = {
-        id: id,
-        customerId: customer.id,
-        type: "payment",
-        date: currentDate,
-        description: addPaymentDescriptionInput,
-        createdAt: new Date,
-        value: toNegative(paymentValue)
+    const token = getCookie("token");
+    request<CustomerEventCreateResponse | ApiErrorResponse, NewCustomerEventData>("customer-events",
+      { method: "POST", token: token, body: customerEvent }
+    ).then(result => {
+      if(!result.data.success) {
+        toast.error(result.data.errorMessage);
+        return
       }
-
-      const customerEventsLogCopy: CustomerEvent[] = [customerEvent, ...customerEventsHistory ];
-
+      const customerEventsLogCopy: CustomerEvent[] = [result.data.customerEvent, ...customerEventsHistory ];
       calcCustomerEventsTotal(customerEventsLogCopy);
       setCustomerEventsHistory(customerEventsLogCopy);
-    }
-    //TODO: add error toast
-    setAddPaymentValueInput("");
-    setAddPaymentDescriptionInput("");
+    });
+
     setOpenAddPayment(false);
   }
 
-  const mockedGetCustomerById = () => {
-    const customerId: number = Number(customerIdParam);
-
-    const findCustomer: Customer | undefined = mockedCustomers.find(customer => customer.id === customerId);
-
-    if(findCustomer) {
-      setCustomer(findCustomer);
-    }
-
-    //TODO: handle customer not found
-  }
-
-/* eslint-disable react-hooks/exhaustive-deps */
-  useEffect(() => { 
-    mockedGetCustomerById(); 
-    calcCustomerEventsTotal(customerEventsHistory);
+  React.useEffect(() => { 
+    getCustomer(); 
+    getCustomerEvents();
   }, []);
-/* eslint-enable react-hooks/exhaustive-deps */
 
   return (
-    <main className="p-4">
-      <div className="flex flex-col justify-between h-[calc(100dvh-var(--header-height)-var(--spacing)*8)]">
-        <section>
-          <nav className="flex justify-end">
-            <Link href="/customers">
-              <X className="text-primary"/>
-            </Link>
-          </nav>
-          <h2 className="font-medium text-sm">Cliente</h2>
-          <p>{ customer.name }</p>
-        </section>
+    <>
+      <main className="p-4">
+        <div className="flex flex-col justify-between h-[calc(100dvh-var(--header-height)-var(--spacing)*8)]">
+          <section>
+            <nav className="flex justify-end">
+              <Link href="/customers">
+                <X className="text-primary"/>
+              </Link>
+            </nav>
+            <h2 className="font-medium text-sm">Cliente</h2>
+            <p>{ customer.name }</p>
+          </section>
 
-        <section className="bg-card text-card-foreground flex flex-col gap-2 rounded-md border p-4">
-          <h2 className="font-medium text-sm">Total a pagar</h2>
-          <p className="text-lg">{ toBrazilianCurrency(customerEventsTotal ? customerEventsTotal : 0) }</p>
-        </section>
+          <section className="bg-card text-card-foreground flex flex-col gap-2 rounded-md border p-4">
+            <h2 className="font-medium text-sm">Total a pagar</h2>
+            <p className="text-lg">{ toBrazilianCurrency(customerEventsTotal ? customerEventsTotal : 0) }</p>
+          </section>
 
-        <section className="rounded-md border p-4 h-[calc(100%-194px-var(--spacing)*16)]">
-          <div className="flex justify-between mb-4">
-            <h2 className="font-medium text-sm">Histórico</h2>
-            <PdfButtons 
-              customer={ customer }
-              customerEventsHistory={ customerEventsHistory }
-              customerEventsTotal={ customerEventsTotal } 
+          <section className="rounded-md border p-4 h-[calc(100%-194px-var(--spacing)*16)]">
+            <div className="flex justify-between mb-4">
+              <h2 className="font-medium text-sm">Histórico</h2>
+              <PdfButtons 
+                customer={ customer }
+                customerEventsHistory={ customerEventsHistory }
+                customerEventsTotal={ customerEventsTotal } 
+              />
+            </div>
+
+            <CustomerEventsHistory
+              customerEventsHistory={ customerEventsHistory } 
+              setCustomerEventsHistory={ setCustomerEventsHistory }
+              calcCustomerEventsTotal={ calcCustomerEventsTotal }        
             />
-          </div>
-          <CustomerEventsHistory
-            customerEventsHistory={ customerEventsHistory } 
-            setCustomerEventsHistory={ setCustomerEventsHistory }
-            calcCustomerEventsTotal={ calcCustomerEventsTotal }        
-          />
-        </section>  
+            
+          </section>  
 
-        <section className="flex justify-between">
-          <Button className="w-[65%]" onClick={ handleAddPurchaseButtonClick } >Adicionar Compra</Button>
-          <Button className="w-[30%]" onClick={ handleAddPaymentButtonClick }>Abater</Button>
-        </section>
-      </div>
+          <section className="flex justify-between">
+            <Button className="w-[65%]" onClick={ handleAddPurchaseButtonClick } >Adicionar Compra</Button>
+            <Button className="w-[30%]" onClick={ handleAddPaymentButtonClick }>Abater</Button>
+          </section>
+        </div>
 
-      <AddPurchaseDialog 
-        openAddPurchase={ openAddPurchase }
-        setOpenAddPurchase={ setOpenAddPurchase }
-        handleAddPurchaseValueInputChange={ handleAddPurchaseValueInputChange }
-        addPurchaseValueInput={ addPurchaseValueInput }
-        handleAddPurchaseDescriptionInputChange={ handleAddPurchaseDescriptionInputChange }
-        addPurchaseDescriptionInput={ addPurchaseDescriptionInput }
-        handleAddPurchaseCancelButtonClick={ handleAddPurchaseCancelButtonClick }
-        handleAddPurchaseConfirmButtonClick={ handleAddPurchaseConfirmButtonClick }
-      />
+        <AddPurchaseDialog 
+          openAddPurchase={ openAddPurchase }
+          handleAddPurchaseCancelButtonClick={ handleAddPurchaseCancelButtonClick }
+          handleAddPurchaseConfirmButtonClick={ handleAddPurchaseConfirmButtonClick }
+        />
 
-      <AddPaymentDialog 
-        openAddPayment={ openAddPayment }
-        setOpenAddPayment={ setOpenAddPayment }
-        handleAddPaymentValueInputChange={ handleAddPaymentValueInputChange }
-        addPaymentValueInput={ addPaymentValueInput }
-        handleAddPaymentDescriptionInputChange={ handleAddPaymentDescriptionInputChange }
-        addPaymentDescriptionInput={ addPaymentDescriptionInput }
-        handleAddPaymentCancelButtonClick={ handleAddPaymentCancelButtonClick }
-        handleAddPaymentConfirmButtonClick={ handleAddPaymentConfirmButtonClick }
-      />
-    </main>
+        <AddPaymentDialog 
+          openAddPayment={ openAddPayment }
+          handleAddPaymentCancelButtonClick={ handleAddPaymentCancelButtonClick }
+          handleAddPaymentConfirmButtonClick={ handleAddPaymentConfirmButtonClick }
+        />
+      </main>
+    </>
   )
 }
 

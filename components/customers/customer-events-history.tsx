@@ -1,14 +1,14 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '../ui/table'
-import { CustomerEvent } from '@/types/entities/customer'
+import { CustomerEvent, CustomerEventUpdateResponse, UpdateCustomerEventData } from '@/types/entities/customer'
 import CustomerEventHistoryItem from './customer-event-history-item'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Label } from '../ui/label'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { formatDate } from '@/util/date-format'
 import { toNegative, toPositive } from '@/util/math'
+import EditCustomerEventDialog from './edit-customer-event-dialog'
+import { toast } from 'react-toastify'
+import { getCookie } from '@/lib/get-cookie'
+import { request } from '@/lib/api'
+import { ApiErrorResponse } from '@/types/api/api-response'
 
 const initializeCustomerEvent: CustomerEvent = {
   id: 0,
@@ -17,7 +17,7 @@ const initializeCustomerEvent: CustomerEvent = {
   date: "",
   description: "",
   value: 0,
-  createdAt: new Date(0)
+  createdAt: ""
 }
 
 type PropTypes = {
@@ -33,116 +33,90 @@ const CustomerEventsHistory = (props: PropTypes) => {
     calcCustomerEventsTotal
   } = props
 
-  const [openCustomerEvent, setOpenCustomerEvent] = useState<boolean>(false);
-
-  const [editCustomerEventValueInput, setEditCustomerEventValueInput] = useState<string>("");
-  const [editCustomerEventDescriptionInput, setEditCustomerEventDescriptionInput] = useState<string>("");
-
-  const [selectedCustomerEvent, setSelectedCustomerEvent] = useState<CustomerEvent>(initializeCustomerEvent);
+  const [openEditCustomerEvent, setOpenEditCustomerEvent] = useState<boolean>(false);
+  const [selectedEditCustomerEvent, setSelectedEditCustomerEvent] = useState<CustomerEvent>(initializeCustomerEvent);
 
   const handleEditCustomerEventButtonClick = (customerEvent: CustomerEvent) => {
-    setOpenCustomerEvent(true);
-    setSelectedCustomerEvent(customerEvent);
-    setEditCustomerEventValueInput(String(toPositive(customerEvent.value)));
-    setEditCustomerEventDescriptionInput(customerEvent.description);
-  }
-
-  const handleEditCustomerEventValueInputChange = (e: BaseSyntheticEvent) => {
-    setEditCustomerEventValueInput(e.target.value);
-  }
-
-  const handleEditCustomerEventDescriptionInputChange = (e: BaseSyntheticEvent) => {
-    setEditCustomerEventDescriptionInput(e.target.value);
+    setOpenEditCustomerEvent(true);
+    setSelectedEditCustomerEvent({ ...customerEvent, value: toPositive(customerEvent.value) } );
   }
 
   const handleEditCustomerEventCancelButtonClick = () => {
-    setOpenCustomerEvent(false);
-    setSelectedCustomerEvent(initializeCustomerEvent);
-    setEditCustomerEventValueInput("");
-    setEditCustomerEventDescriptionInput("");
+    setOpenEditCustomerEvent(false);
+    setSelectedEditCustomerEvent(initializeCustomerEvent);
   }
 
   const handleEditCustomerEventConfirmButtonClick = () => {
-    if(editCustomerEventValueInput && editCustomerEventDescriptionInput) {
-      const editCustomerEventValueToNumber: number = Number(editCustomerEventValueInput);
+    if(!selectedEditCustomerEvent.description || !selectedEditCustomerEvent.value) {
+      toast.warning("Dados inválidos");
+      return
+    }
+
+    const valueWithSignal: number = 
+      selectedEditCustomerEvent.type === "purchase" 
+      ? toPositive(Number(selectedEditCustomerEvent.value)) 
+      : toNegative(Number(selectedEditCustomerEvent.value))
+
+    const updateCustomerEventData: UpdateCustomerEventData = {
+      description: selectedEditCustomerEvent.description,
+      value: valueWithSignal
+    }
+
+    const token = getCookie("token");
+    request<CustomerEventUpdateResponse | ApiErrorResponse, UpdateCustomerEventData>(
+      `customer-events/${selectedEditCustomerEvent.id}`, 
+      { method: "PATCH", token: token, body: updateCustomerEventData }
+    ).then(result => {
+      if(!result.data.success) {
+        toast.error(result.data.errorMessage);
+        return
+      }
 
       const customerEventsHistoryCopy: CustomerEvent[] = [...customerEventsHistory];
-
-      const customerEventsHistoryCopyUpdated: CustomerEvent[] = 
-        customerEventsHistoryCopy.map(customerEvent => customerEvent.id === selectedCustomerEvent.id ? 
-        { ...customerEvent, 
-          value: customerEvent.type === "purchase" ? toPositive(editCustomerEventValueToNumber) : toNegative(editCustomerEventValueToNumber),  
-          description: editCustomerEventDescriptionInput 
-        }
-        : customerEvent
+      const customerEventsHistoryCopyUpdated: CustomerEvent[] = customerEventsHistoryCopy.map(
+        customerEvent => customerEvent.id === selectedEditCustomerEvent.id ? 
+        { ...selectedEditCustomerEvent, value: valueWithSignal } : customerEvent
       );
+
+      console.log(customerEventsHistoryCopyUpdated)
 
       calcCustomerEventsTotal(customerEventsHistoryCopyUpdated);
       setCustomerEventsHistory(customerEventsHistoryCopyUpdated);
-    }
-    //TODO: add error toast
-    setOpenCustomerEvent(false);
-    setSelectedCustomerEvent(initializeCustomerEvent);
-    setEditCustomerEventValueInput("");
-    setEditCustomerEventDescriptionInput("");
+    });
+    
+    setOpenEditCustomerEvent(false);
+    setSelectedEditCustomerEvent(initializeCustomerEvent);
   }
 
   return (
     <>
       <ScrollArea className="w-full h-[calc(100%-24px)]">
         <Table>
-          <TableBody>
-            {
-              customerEventsHistory.map((customerEvent, i )=> {
-                return (
-                  <TableRow key={ i } >
-                    <TableCell className="py-2 pl-2 pr-0">
-                      <CustomerEventHistoryItem  
-                        customerEvent={ customerEvent } 
-                        handleEditCustomerEventButtonClick={ handleEditCustomerEventButtonClick }
-                      />
-                    </TableCell>
-                  </TableRow> 
-                )
-              })
-            }
-          </TableBody>
+        <TableBody>
+          { customerEventsHistory.map((customerEvent, i )=> {
+            return (
+              <TableRow key={ i } >
+              <TableCell className="py-2 pl-2 pr-0">
+                <CustomerEventHistoryItem  
+                  customerEvent={ customerEvent } 
+                  handleEditCustomerEventButtonClick={ handleEditCustomerEventButtonClick }
+                />
+              </TableCell>
+              </TableRow> 
+            )
+          })}
+        </TableBody>
         </Table>
       </ScrollArea>
 
-      <Dialog open={ openCustomerEvent } onOpenChange={ setOpenCustomerEvent }>
-        <DialogContent aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle className="sr-only">{ selectedCustomerEvent.type === "purchase" ? "Compra" : "Pagamento" }</DialogTitle>
-          </DialogHeader>
-          <div>
-            <div className="flex justify-between mb-2">
-              <h3>{ selectedCustomerEvent.type === "purchase" ? "Compra" : "Pagamento" }</h3>
-              <p>{ formatDate(selectedCustomerEvent.createdAt) }</p>
-            </div>
+      <EditCustomerEventDialog 
+        openEditCustomerEvent={ openEditCustomerEvent } 
+        selectedEditCustomerEvent={ selectedEditCustomerEvent } 
+        setSelectedEditCustomerEvent={ setSelectedEditCustomerEvent } 
+        handleEditCustomerEventCancelButtonClick={ handleEditCustomerEventCancelButtonClick } 
+        handleEditCustomerEventConfirmButtonClick={ handleEditCustomerEventConfirmButtonClick }     
+      />
 
-            <Label htmlFor="event-value" className="mb-2">Valor</Label>
-            <Input
-              type="number"
-              id="event-value"
-              value={ editCustomerEventValueInput }
-              onChange={ handleEditCustomerEventValueInputChange }
-            />
-          </div>
-          <div>
-            <Label htmlFor="event-description" className="mb-2">Descrição</Label>
-            <Input
-              id="event-description"
-              value={ editCustomerEventDescriptionInput }
-              onChange={ handleEditCustomerEventDescriptionInputChange }
-            />
-          </div>
-          <DialogFooter className="flex-row">
-            <Button variant="secondary" className="w-1/2" onClick={ handleEditCustomerEventCancelButtonClick }>Cancelar</Button>
-            <Button className="w-1/2" onClick={ handleEditCustomerEventConfirmButtonClick }>Confirmar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   )
 }

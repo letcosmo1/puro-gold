@@ -8,7 +8,7 @@ import { Customer } from '@/types/entities/customer';
 type PropTypes = {
   openEditCustomer: boolean,
   selectedEditCustomer: Customer,
-  setSelectedEditClient: React.Dispatch<Customer>,
+  setSelectedEditCustomer: React.Dispatch<Customer>,
   handleEditCustomerCancelButtonClick: () => void,
   handleEditCustomerConfirmButtonClick: () => void
 }
@@ -17,13 +17,13 @@ const EditCustomerDialog = (props: PropTypes) => {
   const { 
     openEditCustomer, 
     selectedEditCustomer,
-    setSelectedEditClient,
+    setSelectedEditCustomer,
     handleEditCustomerCancelButtonClick,
     handleEditCustomerConfirmButtonClick
   } = props;
 
   const handleEditedCustomerNameInputChange = (e: React.BaseSyntheticEvent) => {
-    setSelectedEditClient({ ...selectedEditCustomer, name: e.target.value });
+    setSelectedEditCustomer({ ...selectedEditCustomer, name: e.target.value });
   }
 
   return (
