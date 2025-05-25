@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, { useEffect } from "react";
 import AddCustomerDialog from "@/components/customers/add-customer-dialog";
 import EditCustomerDialog from "@/components/customers/edit-customer-dialog";
 import { Button } from "@/components/ui/button";
@@ -8,17 +8,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody } from "@/components/ui/table";
-import { mockedCustomers } from "@/mocked-data/customer-data";
-import { Customer } from "@/types/entities/customer";
+import { Customer, CustomerCreateResponse, CustomerListResponse, NewCustomerData, UpdateCustomerData } from "@/types/entities/customer";
 import CustomerTableRow from "@/components/customers/customer-table-row";
+import { request } from "@/lib/api";
+import { ApiErrorResponse } from "@/types/api/api-response";
+import { getCookie } from "@/lib/get-cookie";
+import { toast, ToastContainer } from "react-toastify";
 
 const CustomersPage = () => {
   const [openEditCustomer, setOpenEditCustomer] = React.useState<boolean>(false);
   const [openAddCustomer, setOpenAddCustomer] = React.useState<boolean>(false);
 
-  const [customers, setCustomers] = React.useState<Customer[]>(mockedCustomers);
+  const [customers, setCustomers] = React.useState<Customer[]>([]);
 
-  const [filteredCustomers, setFilteredCustomers] = React.useState<Customer[]>(mockedCustomers);
+  const [filteredCustomers, setFilteredCustomers] = React.useState<Customer[]>([]);
   const [filterInput, setFilterInput] = React.useState<string>("");
 
   const [selectedEditClient, setSelectedEditClient] = React.useState<Customer>({ id: 0, name: "" })
@@ -33,28 +36,42 @@ const CustomersPage = () => {
 
   /***** EDIT CUSTOMER DIALOG FUNCTIONS *****/
   const handleEditCustomerButtonClick = (customer: Customer) => {
-    if(customer.id && customer.name) {
-      setSelectedEditClient(customer);
-      setOpenEditCustomer(true);
+    if(!customer.id || !customer.name) {
+      toast.error("Erro ao abrir janela de edição de cliente.");
+      return
     }
-    //TODO: add error toast
+    setSelectedEditClient(customer);
+    setOpenEditCustomer(true);
   }
 
   const handleEditCustomerConfirmButtonClick = () => {
-    if(selectedEditClient.id && selectedEditClient.name) {
-      const customersCopy: Customer[] = [...customers];
+    if(!selectedEditClient.id || !selectedEditClient.name) {
+      toast.warning("Dados inválidos.");
+      return
+    }
 
+    const token = getCookie("token");
+    request<CustomerCreateResponse | ApiErrorResponse, UpdateCustomerData>(`customers/${selectedEditClient.id}`, 
+      { method: "PATCH", token: token, body: { name: selectedEditClient.name } }
+    ).then(result => {
+      if(!result.data.success) {
+        toast.error(result.data.errorMessage);
+        return
+      }
+
+      const customersCopy: Customer[] = [...customers];
       const customersUpdated: Customer[] = customersCopy.map(customer => 
-        customer.id === selectedEditClient.id ? selectedEditClient : customer
+        customer.id === selectedEditClient.id ? 
+        selectedEditClient : customer 
       );
 
       setCustomers(customersUpdated);
       setFilteredCustomers(customersUpdated);
-      setFilterInput("");
-      setSelectedEditClient({ id: 0, name: "" });
-    }
-    //TODO: add error toast
+    });
+    
     setOpenEditCustomer(false);
+    setFilterInput("");
+    setSelectedEditClient({ id: 0, name: "" });
   }
 
   const handleEditCustomerCancelButtonClick = () => {
@@ -67,21 +84,45 @@ const CustomersPage = () => {
   const handleAddCustomerCancelButtonClick = () => setOpenAddCustomer(false);
 
   const handleAddCustomerConfirmButtonClick = (name: string) => {
-    if(name) {
-      const id: number = customers.length + 1;
+    if(!name) {
+      toast.warning("Dados inválidos.")
+      return
+    }
 
-      const customersCopy: Customer[] = [...customers, { id: id, name: name }];
-
+    const token = getCookie("token");
+    request<CustomerCreateResponse | ApiErrorResponse, NewCustomerData>("customers", 
+      { method: "POST", token: token, body: { name } }
+    ).then(result => {
+      if(!result.data.success) {
+        toast.error(result.data.errorMessage);
+        return
+      }
+      const customersCopy: Customer[] = [...customers, result.data.customer];
       setCustomers(customersCopy);
       setFilteredCustomers(customersCopy);
-      setFilterInput("");
-    }
-    //TODO: add error toast
+    });
+
+    setFilterInput("");
     setOpenAddCustomer(false);
   }
 
+  useEffect(() => {
+    const token = getCookie("token");
+    request<CustomerListResponse | ApiErrorResponse, null>("customers", 
+      { method: "GET", token: token }
+    ).then(result => {
+      if(!result.data.success) {
+        toast.error(result.data.errorMessage);
+        return
+      }
+      setCustomers(result.data.customers);
+      setFilteredCustomers(result.data.customers);
+    });
+  }, []);
+
   return (
     <>
+    <ToastContainer autoClose={ 2000 } />
       <main className="p-4 flex flex-col justify-between h-[calc(100dvh-var(--header-height))]">
         <div>
           <Label htmlFor="search-customer" className="mb-2">Pesquisar</Label>
@@ -98,17 +139,14 @@ const CustomersPage = () => {
           <ScrollArea className="w-full h-[calc(100%-20px)]">
             <Table>
               <TableBody>
-                { 
-                  filteredCustomers.map(customer => { 
-                    return (
-                      <CustomerTableRow 
-                        key={ customer.id } 
-                        customer={ customer } 
-                        handleEditCustomerButtonClick={ handleEditCustomerButtonClick } 
-                      /> 
-                    )
-                  })
-                }
+                { filteredCustomers.map(customer => { 
+                  return (
+                  <CustomerTableRow 
+                    key={ customer.id } 
+                    customer={ customer } 
+                    handleEditCustomerButtonClick={ handleEditCustomerButtonClick } 
+                  />)
+                })}
               </TableBody>
             </Table>
           </ScrollArea>
