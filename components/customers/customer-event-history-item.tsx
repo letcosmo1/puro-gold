@@ -4,7 +4,7 @@ import { toPositive } from '@/util/math'
 import React from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { EllipsisVertical } from 'lucide-react'
-import { formatDate } from '@/util/date-format'
+import { formatStringToDate } from '@/util/date-format'
 
 type PropTypes = {
   customerEvent: CustomerEvent,
@@ -27,7 +27,7 @@ const CustomerEventHistoryItem = ({ customerEvent, handleEditCustomerEventButton
       <div className="w-[calc(100%-36px)]">
         <div className="flex justify-between mb-2">
           <h3>{ customerEvent.type === "purchase" ? "Compra" : "Pagamento" }</h3>
-          <p>{ formatDate(customerEvent.createdAt) }</p>
+          <p>{ formatStringToDate(customerEvent.createdAt) }</p>
         </div>
         <p>{ getEventDescription() }</p>
       </div>

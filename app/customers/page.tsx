@@ -13,7 +13,7 @@ import CustomerTableRow from "@/components/customers/customer-table-row";
 import { request } from "@/lib/api";
 import { ApiErrorResponse } from "@/types/api/api-response";
 import { getCookie } from "@/lib/get-cookie";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const CustomersPage = () => {
   const [openEditCustomer, setOpenEditCustomer] = React.useState<boolean>(false);
@@ -24,7 +24,7 @@ const CustomersPage = () => {
   const [filteredCustomers, setFilteredCustomers] = React.useState<Customer[]>([]);
   const [filterInput, setFilterInput] = React.useState<string>("");
 
-  const [selectedEditClient, setSelectedEditClient] = React.useState<Customer>({ id: 0, name: "" })
+  const [selectedEditCustomer, setSelectedEditCustomer] = React.useState<Customer>({ id: 0, name: "" })
 
   const handleFilterCustomersInputChange = (e: React.BaseSyntheticEvent) => {
     const filterWord: string = e.target.value;
@@ -40,19 +40,19 @@ const CustomersPage = () => {
       toast.error("Erro ao abrir janela de edição de cliente.");
       return
     }
-    setSelectedEditClient(customer);
+    setSelectedEditCustomer(customer);
     setOpenEditCustomer(true);
   }
 
   const handleEditCustomerConfirmButtonClick = () => {
-    if(!selectedEditClient.id || !selectedEditClient.name) {
+    if(!selectedEditCustomer.id || !selectedEditCustomer.name) {
       toast.warning("Dados inválidos.");
       return
     }
 
     const token = getCookie("token");
-    request<CustomerCreateResponse | ApiErrorResponse, UpdateCustomerData>(`customers/${selectedEditClient.id}`, 
-      { method: "PATCH", token: token, body: { name: selectedEditClient.name } }
+    request<CustomerCreateResponse | ApiErrorResponse, UpdateCustomerData>(`customers/${selectedEditCustomer.id}`, 
+      { method: "PATCH", token: token, body: { name: selectedEditCustomer.name } }
     ).then(result => {
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
@@ -61,8 +61,8 @@ const CustomersPage = () => {
 
       const customersCopy: Customer[] = [...customers];
       const customersUpdated: Customer[] = customersCopy.map(customer => 
-        customer.id === selectedEditClient.id ? 
-        selectedEditClient : customer 
+        customer.id === selectedEditCustomer.id ? 
+        selectedEditCustomer : customer 
       );
 
       setCustomers(customersUpdated);
@@ -71,11 +71,11 @@ const CustomersPage = () => {
     
     setOpenEditCustomer(false);
     setFilterInput("");
-    setSelectedEditClient({ id: 0, name: "" });
+    setSelectedEditCustomer({ id: 0, name: "" });
   }
 
   const handleEditCustomerCancelButtonClick = () => {
-    setSelectedEditClient({ id: 0, name: "" });
+    setSelectedEditCustomer({ id: 0, name: "" });
     setOpenEditCustomer(false);
   }
 
@@ -122,7 +122,6 @@ const CustomersPage = () => {
 
   return (
     <>
-    <ToastContainer autoClose={ 2000 } />
       <main className="p-4 flex flex-col justify-between h-[calc(100dvh-var(--header-height))]">
         <div>
           <Label htmlFor="search-customer" className="mb-2">Pesquisar</Label>
@@ -163,8 +162,8 @@ const CustomersPage = () => {
 
       <EditCustomerDialog 
         openEditCustomer={ openEditCustomer }
-        selectedEditCustomer={ selectedEditClient }
-        setSelectedEditClient={ setSelectedEditClient } 
+        selectedEditCustomer={ selectedEditCustomer }
+        setSelectedEditCustomer={ setSelectedEditCustomer } 
         handleEditCustomerCancelButtonClick={ handleEditCustomerCancelButtonClick }
         handleEditCustomerConfirmButtonClick={ handleEditCustomerConfirmButtonClick }
       />

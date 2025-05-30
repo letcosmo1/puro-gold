@@ -1,4 +1,5 @@
 import Header from "@/components/global/header";
+import { ToastContainer } from "react-toastify";
 
 const CustomersLayout = ({
   children,
@@ -9,6 +10,7 @@ const CustomersLayout = ({
     <>
       <Header />
       {children}
+      <ToastContainer autoClose={ 2000 } />
     </>
   );
 }
