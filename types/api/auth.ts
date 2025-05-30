@@ -1,13 +1,13 @@
 export type LoginResponse = {
-  errorMessage?: string,
-  user?: {
+  success: true,
+  user: {
     id: string,
     email: string
   },
-  token?: string
+  token: string
 }
 
-export type LoginBody = {
+export type LoginData = {
   email: string,
   password: string
 }
