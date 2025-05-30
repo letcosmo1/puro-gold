@@ -1,12 +1,12 @@
 'use client'
 
-import AddPaymentDialog from '@/components/customer/add-payment-dialog'
-import AddPurchaseDialog from '@/components/customer/add-purchase-dialog'
-import CustomerEventsHistory from '@/components/customer/customer-events-history'
-import PdfButtons from '@/components/customer/pdf-buttons'
+import AddPaymentDialog from '@/components/customers/add-payment-dialog'
+import AddPurchaseDialog from '@/components/customers/add-purchase-dialog'
+import CustomerEventsHistory from '@/components/customers/customer-events-history'
+import PdfButtons from '@/components/customers/pdf-buttons'
 import { Button } from '@/components/ui/button'
 import { mockedCustomerEventHistory, mockedCustomers } from '@/mocked-data/customer-data'
-import { CustomerEvent, Customer } from '@/types/customer'
+import { CustomerEvent, Customer } from '@/types/entities/customer'
 import { toBrazilianCurrency } from '@/util/currency-format'
 import { getCurrentDate } from '@/util/date-format'
 import { toNegative, toPositive } from '@/util/math'
@@ -16,7 +16,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 
-const CustomerPage = () => {
+const CustomerDetailPage = () => {
   const params = useParams();
   const customerIdParam: ParamValue = params.id;
 
@@ -161,12 +161,12 @@ const CustomerPage = () => {
 /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
-    <>
-      <div className="flex flex-col justify-between h-[calc(100vh-var(--header-height)-var(--spacing)*8)]">
+    <main className="p-4">
+      <div className="flex flex-col justify-between h-[calc(100dvh-var(--header-height)-var(--spacing)*8)]">
         <section>
           <nav className="flex justify-end">
-            <Link href="/">
-              <X/>
+            <Link href="/customers">
+              <X className="text-primary"/>
             </Link>
           </nav>
           <h2 className="font-medium text-sm">Cliente</h2>
@@ -221,8 +221,8 @@ const CustomerPage = () => {
         handleAddPaymentCancelButtonClick={ handleAddPaymentCancelButtonClick }
         handleAddPaymentConfirmButtonClick={ handleAddPaymentConfirmButtonClick }
       />
-    </>
+    </main>
   )
 }
 
-export default CustomerPage
+export default CustomerDetailPage

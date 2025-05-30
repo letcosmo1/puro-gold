@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { Table, TableBody, TableCell, TableRow } from '../ui/table'
-import { CustomerEvent } from '@/types/customer'
+import { CustomerEvent } from '@/types/entities/customer'
 import CustomerEventHistoryItem from './customer-event-history-item'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Label } from '../ui/label'

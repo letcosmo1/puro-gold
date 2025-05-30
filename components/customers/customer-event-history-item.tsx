@@ -1,4 +1,4 @@
-import { CustomerEvent } from '@/types/customer'
+import { CustomerEvent } from '@/types/entities/customer'
 import { toBrazilianCurrency } from '@/util/currency-format'
 import { toPositive } from '@/util/math'
 import React from 'react'
@@ -32,7 +32,7 @@ const CustomerEventHistoryItem = ({ customerEvent, handleEditCustomerEventButton
         <p>{ getEventDescription() }</p>
       </div>
       <DropdownMenu>
-        <DropdownMenuTrigger className="flex h-fit"><EllipsisVertical /></DropdownMenuTrigger>
+        <DropdownMenuTrigger className="flex h-fit"><EllipsisVertical className="text-primary" /></DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onSelect={ () => handleEditCustomerEventButtonClick(customerEvent) }>Editar</DropdownMenuItem>
         </DropdownMenuContent>

@@ -3,12 +3,12 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { Customer } from '@/types/entities/customer';
 
 type PropTypes = {
   openEditCustomer: boolean,
-  setOpenEditCustomer: React.Dispatch<boolean>,
-  handleEditCustomerNameInputChange: (e: React.BaseSyntheticEvent) => void,
-  editCustomerNameInput: string,
+  selectedEditCustomer: Customer,
+  setSelectedEditClient: React.Dispatch<Customer>,
   handleEditCustomerCancelButtonClick: () => void,
   handleEditCustomerConfirmButtonClick: () => void
 }
@@ -16,15 +16,18 @@ type PropTypes = {
 const EditCustomerDialog = (props: PropTypes) => {
   const { 
     openEditCustomer, 
-    setOpenEditCustomer,
-    handleEditCustomerNameInputChange,
-    editCustomerNameInput,
+    selectedEditCustomer,
+    setSelectedEditClient,
     handleEditCustomerCancelButtonClick,
     handleEditCustomerConfirmButtonClick
   } = props;
 
+  const handleEditedCustomerNameInputChange = (e: React.BaseSyntheticEvent) => {
+    setSelectedEditClient({ ...selectedEditCustomer, name: e.target.value });
+  }
+
   return (
-    <Dialog open={ openEditCustomer } onOpenChange={ setOpenEditCustomer }>
+    <Dialog open={ openEditCustomer }>
       <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Editar nome do cliente</DialogTitle>
@@ -33,8 +36,8 @@ const EditCustomerDialog = (props: PropTypes) => {
           <Label htmlFor="new-customer-name" className="mb-2">Novo nome</Label>
           <Input 
             id="new-customer-name" 
-            onChange={ handleEditCustomerNameInputChange } 
-            value={ editCustomerNameInput }
+            onChange={ handleEditedCustomerNameInputChange } 
+            value={ selectedEditCustomer.name }
           />
         </div>
         <DialogFooter className="flex-row">
