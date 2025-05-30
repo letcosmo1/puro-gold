@@ -2,6 +2,11 @@ export const formatDate = (date: Date ) => {
   return date.toLocaleDateString('pt-BR');
 }
 
+export const formatStringToDate = (date: string ) => {
+  const parsedDate = new Date(date);
+  return parsedDate.toLocaleDateString('pt-BR');
+}
+
 export const getCurrentDate = () => {
   //FORMAT: dd/mm/yyyy
 

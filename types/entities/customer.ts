@@ -3,16 +3,6 @@ export type Customer = {
   name: string
 }
 
-export type CustomerEvent = {
-  id: number,
-  customerId: number,
-  type: "purchase" | "payment",
-  date: string,
-  description: string,
-  value: number
-  createdAt: Date
-}
-
 export type NewCustomerData = {
   name: string
 }
@@ -40,3 +30,43 @@ export type CustomerListResponse = {
   success: true,
   customers: Customer[]
 }
+
+export type CustomerEvent = {
+  id: number,
+  customerId: number,
+  type: "purchase" | "payment",
+  date: string,
+  description: string,
+  value: number
+  createdAt: string
+}
+
+export type NewCustomerEventData = {
+  customerId: number,
+  type: "purchase" | "payment",
+  date: string,
+  description: string,
+  value: number
+  createdAt: Date
+}
+
+export type UpdateCustomerEventData = {
+  description: string,
+  value: number
+}
+
+export type CustomerEventCreateResponse = {
+  success: true,
+  customerEvent: CustomerEvent
+}
+
+export type CustomerEventUpdateResponse = {
+  success: true,
+  customerEvent: CustomerEvent
+}
+
+export type CustomerEventListResponse = {
+  success: true,
+  customerEvents: CustomerEvent[]
+}
+

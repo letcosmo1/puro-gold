@@ -30,7 +30,7 @@ export const mockedCustomerEventHistory: CustomerEvent[] = [
     type: "payment",
     date: "07/09/2024",
     description: "Event description 1",
-    createdAt: new Date('2025-01-01T10:00:00Z') ,
+    createdAt: '2025-01-01T10:00:00Z' ,
     value: -20
   },
   {
@@ -39,7 +39,7 @@ export const mockedCustomerEventHistory: CustomerEvent[] = [
     type: "purchase",
     date: "04/07/2024",
     description: "Event description 2",
-    createdAt: new Date('2025-02-01T12:30:00Z'),
+    createdAt: '2025-02-01T12:30:00Z',
     value: 100
   },
   {
@@ -48,7 +48,7 @@ export const mockedCustomerEventHistory: CustomerEvent[] = [
     type: "payment",
     date: "25/08/2024",
     description: "Event description 3",
-    createdAt: new Date('2025-03-01T09:15:00Z'),
+    createdAt: '2025-03-01T09:15:00Z',
     value: -25
   },
   {
@@ -57,7 +57,7 @@ export const mockedCustomerEventHistory: CustomerEvent[] = [
     type: "payment",
     date: "07/11/2024",
     description: "Event description 4",
-    createdAt: new Date('2025-04-01T14:45:00Z'),
+    createdAt: '2025-04-01T14:45:00Z',
     value: -10.5
   },
   {
@@ -66,7 +66,7 @@ export const mockedCustomerEventHistory: CustomerEvent[] = [
     type: "purchase",
     date: "14/04/2025",
     description: "Event description 5",
-    createdAt: new Date('2025-05-01T16:00:00Z'),
+    createdAt: '2025-05-01T16:00:00Z',
     value: 20.8
   },
   {
@@ -75,7 +75,7 @@ export const mockedCustomerEventHistory: CustomerEvent[] = [
     type: "purchase",
     date: "05/11/2024",
     description: "Event description 6",
-    createdAt: new Date('2025-06-01T08:20:00Z'),
+    createdAt: '2025-06-01T08:20:00Z',
     value: 99.9
   },
 ]

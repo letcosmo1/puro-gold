@@ -6,29 +6,42 @@ import { Button } from '../ui/button'
 
 type PropTypes = {
   openAddPurchase: boolean,
-  setOpenAddPurchase: React.Dispatch<boolean>,
-  handleAddPurchaseValueInputChange: (e: React.BaseSyntheticEvent) => void,
-  addPurchaseValueInput: string,
-  handleAddPurchaseDescriptionInputChange: (e: React.BaseSyntheticEvent) => void,
-  addPurchaseDescriptionInput: string,
   handleAddPurchaseCancelButtonClick: () => void,
-  handleAddPurchaseConfirmButtonClick: () => void
+  handleAddPurchaseConfirmButtonClick: (description: string, value: string) => void
 }
 
 const AddPurchaseDialog = (props: PropTypes) => {
   const {
     openAddPurchase,
-    setOpenAddPurchase,
-    handleAddPurchaseValueInputChange,
-    addPurchaseValueInput,
-    handleAddPurchaseDescriptionInputChange,
-    addPurchaseDescriptionInput,
     handleAddPurchaseCancelButtonClick,
     handleAddPurchaseConfirmButtonClick
   } = props
 
+  const [value, setValue] = React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
+
+  const handleValueInputChange = (e: React.BaseSyntheticEvent) => {
+    setValue(e.target.value);
+  }
+
+  const handleDescriptionInputChange = (e: React.BaseSyntheticEvent) => {
+    setDescription(e.target.value);
+  }
+
+  const handleCancelButtonClick = () => {
+    setValue("");
+    setDescription("");
+    handleAddPurchaseCancelButtonClick();
+  }
+
+  const handleConfirmButtonClick = () => {
+    setValue("");
+    setDescription("");
+    handleAddPurchaseConfirmButtonClick(description, value);
+  }
+
   return (
-    <Dialog open={ openAddPurchase } onOpenChange={ setOpenAddPurchase }>
+    <Dialog open={ openAddPurchase }>
       <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>Adicionar Compra</DialogTitle>
@@ -38,21 +51,21 @@ const AddPurchaseDialog = (props: PropTypes) => {
           <Input
             type="number"
             id="purchase-value"
-            onChange={ handleAddPurchaseValueInputChange }
-            value={ addPurchaseValueInput }
+            onChange={ handleValueInputChange }
+            value={ value }
           />
         </div>
         <div>
           <Label htmlFor="purchase-description" className="mb-2">Descrição da compra</Label>
           <Input
             id="purchase-description"
-            onChange={ handleAddPurchaseDescriptionInputChange }
-            value={ addPurchaseDescriptionInput }
+            onChange={ handleDescriptionInputChange }
+            value={ description }
           />
         </div>
         <DialogFooter className="flex-row">
-          <Button variant="secondary" className="w-1/2" onClick={ handleAddPurchaseCancelButtonClick }>Cancelar</Button>
-          <Button className="w-1/2" onClick={ handleAddPurchaseConfirmButtonClick }>Confirmar</Button>
+          <Button variant="secondary" className="w-1/2" onClick={ handleCancelButtonClick }>Cancelar</Button>
+          <Button className="w-1/2" onClick={ handleConfirmButtonClick }>Confirmar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

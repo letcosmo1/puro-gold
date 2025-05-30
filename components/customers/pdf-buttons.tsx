@@ -1,6 +1,6 @@
 import { CustomerEvent, Customer } from '@/types/entities/customer';
 import { toBrazilianCurrency } from '@/util/currency-format';
-import { formatDate, getCurrentDateTime } from '@/util/date-format';
+import { formatStringToDate, getCurrentDateTime } from '@/util/date-format';
 import { toPositive } from '@/util/math';
 import jsPDF from 'jspdf';
 import { ArrowDownToLine, Share2 } from 'lucide-react';
@@ -36,7 +36,7 @@ const customerEventsPdfLayout = (customer: Customer, customerEventsHistory: Cust
   customerEventsHistory.forEach(customerEvent => {
     line = line + 5;
     doc.text(customerEvent.type === "purchase" ? "Compra" : "Pagamento", 10, line);
-    doc.text(formatDate(customerEvent.createdAt), 35, line);
+    doc.text(formatStringToDate(customerEvent.createdAt), 35, line);
     
     line = line + 7;
     doc.text(getEventDescription(customerEvent), 10, line);
