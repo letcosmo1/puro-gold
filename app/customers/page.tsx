@@ -1,21 +1,25 @@
 'use client'
 
-import React, { useEffect } from "react";
+import React from "react";
 import AddCustomerDialog from "@/components/customers/add-customer-dialog";
 import EditCustomerDialog from "@/components/customers/edit-customer-dialog";
+import CustomerTableRow from "@/components/customers/customer-table-row";
+import { toast } from "react-toastify";
+import { request } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody } from "@/components/ui/table";
 import { Customer, CustomerCreateResponse, CustomerListResponse, NewCustomerData, UpdateCustomerData } from "@/types/entities/customer";
-import CustomerTableRow from "@/components/customers/customer-table-row";
-import { request } from "@/lib/api";
 import { ApiErrorResponse } from "@/types/api/api-response";
 import { getCookie } from "@/lib/get-cookie";
-import { toast } from "react-toastify";
+import { useRouter } from 'next/navigation'
+import LoadingOverlay from "@/components/global/loading-overlay";
 
 const CustomersPage = () => {
+  const router = useRouter();
+
   const [openEditCustomer, setOpenEditCustomer] = React.useState<boolean>(false);
   const [openAddCustomer, setOpenAddCustomer] = React.useState<boolean>(false);
 
@@ -24,7 +28,13 @@ const CustomersPage = () => {
   const [filteredCustomers, setFilteredCustomers] = React.useState<Customer[]>([]);
   const [filterInput, setFilterInput] = React.useState<string>("");
 
-  const [selectedEditCustomer, setSelectedEditCustomer] = React.useState<Customer>({ id: 0, name: "" })
+  const [selectedEditCustomer, setSelectedEditCustomer] = React.useState<Customer>({ id: 0, name: "" });
+
+  const [isPending, startTransition] = React.useTransition();
+
+  const handleCustomerNameClick = (customerId: number) => {
+    startTransition(() => router.push(`/customers/${ customerId }`)); 
+  }
 
   const handleFilterCustomersInputChange = (e: React.BaseSyntheticEvent) => {
     const filterWord: string = e.target.value;
@@ -106,7 +116,7 @@ const CustomersPage = () => {
     setOpenAddCustomer(false);
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     const token = getCookie("token");
     request<CustomerListResponse | ApiErrorResponse, null>("customers", 
       { method: "GET", token: token }
@@ -122,6 +132,8 @@ const CustomersPage = () => {
 
   return (
     <>
+      <LoadingOverlay show={isPending} />
+      
       <main className="p-4 flex flex-col justify-between h-[calc(100dvh-var(--header-height))]">
         <div>
           <Label htmlFor="search-customer" className="mb-2">Pesquisar</Label>
@@ -140,10 +152,11 @@ const CustomersPage = () => {
               <TableBody>
                 { filteredCustomers.map(customer => { 
                   return (
-                  <CustomerTableRow 
+                  <CustomerTableRow
                     key={ customer.id } 
                     customer={ customer } 
-                    handleEditCustomerButtonClick={ handleEditCustomerButtonClick } 
+                    handleEditCustomerButtonClick={ handleEditCustomerButtonClick }
+                    handleCustomerNameClick={ handleCustomerNameClick }
                   />)
                 })}
               </TableBody>
