@@ -18,6 +18,7 @@ import { X } from 'lucide-react'
 import { ParamValue } from 'next/dist/server/request/params'
 import { useParams } from 'next/navigation'
 import { toast } from 'react-toastify'
+import LoadingOverlay from '@/components/global/loading-overlay'
 
 const CustomerDetailPage = () => {
   const params = useParams();
@@ -31,13 +32,18 @@ const CustomerDetailPage = () => {
   const [openAddPurchase, setOpenAddPurchase] = React.useState<boolean>(false);
   const [openAddPayment, setOpenAddPayment] = React.useState<boolean>(false);
 
+  const [apiLoading, setApiLoading] = React.useState(false);
+
   const getCustomer = () => {
     const customerId: string = String(customerIdParam);
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerResponse | ApiErrorResponse, null>(`customers/${customerId}`, 
       { method: "GET", token: token }
     ).then(result => {
+      setApiLoading(false);
+
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -49,10 +55,13 @@ const CustomerDetailPage = () => {
   const getCustomerEvents = () => {
     const customerId: string = String(customerIdParam);
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerEventListResponse | ApiErrorResponse, null>(`customer-events/${customerId}`, 
       { method: "GET", token: token }
     ).then(result => {
+      setApiLoading(false);
+
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -90,10 +99,13 @@ const CustomerDetailPage = () => {
       value: toPositive(numberValue)
     }
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerEventCreateResponse | ApiErrorResponse, NewCustomerEventData>("customer-events", 
       { method: "POST", token: token, body: customerEvent }
     ).then(result => {
+      setApiLoading(false);
+
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -127,10 +139,13 @@ const CustomerDetailPage = () => {
       value: toNegative(numberValue)
     }
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerEventCreateResponse | ApiErrorResponse, NewCustomerEventData>("customer-events",
       { method: "POST", token: token, body: customerEvent }
     ).then(result => {
+      setApiLoading(false);
+
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -152,6 +167,8 @@ const CustomerDetailPage = () => {
 
   return (
     <>
+      <LoadingOverlay show={ apiLoading } />
+
       <main className="p-4">
         <div className="flex flex-col justify-between h-[calc(100dvh-var(--header-height)-var(--spacing)*8)]">
           <section>

@@ -31,6 +31,9 @@ const CustomersPage = () => {
   const [selectedEditCustomer, setSelectedEditCustomer] = React.useState<Customer>({ id: 0, name: "" });
 
   const [isPending, startTransition] = React.useTransition();
+  const [apiLoading, setApiLoading] = React.useState(false);
+  
+  const showLoading = apiLoading || isPending;
 
   const handleCustomerNameClick = (customerId: number) => {
     startTransition(() => router.push(`/customers/${ customerId }`)); 
@@ -60,10 +63,13 @@ const CustomersPage = () => {
       return
     }
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerCreateResponse | ApiErrorResponse, UpdateCustomerData>(`customers/${selectedEditCustomer.id}`, 
       { method: "PATCH", token: token, body: { name: selectedEditCustomer.name } }
     ).then(result => {
+      setApiLoading(false);
+
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -99,10 +105,13 @@ const CustomersPage = () => {
       return
     }
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerCreateResponse | ApiErrorResponse, NewCustomerData>("customers", 
       { method: "POST", token: token, body: { name } }
     ).then(result => {
+      setApiLoading(false);
+
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -117,10 +126,12 @@ const CustomersPage = () => {
   }
 
   React.useEffect(() => {
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerListResponse | ApiErrorResponse, null>("customers", 
       { method: "GET", token: token }
     ).then(result => {
+      setApiLoading(false);
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -132,7 +143,7 @@ const CustomersPage = () => {
 
   return (
     <>
-      <LoadingOverlay show={isPending} />
+      <LoadingOverlay show={ showLoading } />
       
       <main className="p-4 flex flex-col justify-between h-[calc(100dvh-var(--header-height))]">
         <div>
