@@ -1,6 +1,6 @@
 'use client'
 
-import React, { BaseSyntheticEvent, useState } from 'react'
+import React from 'react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
@@ -9,18 +9,20 @@ import { request } from '@/lib/api'
 import { LoginData, LoginResponse } from '@/types/api/auth'
 import { toast, ToastContainer } from 'react-toastify'
 import { ApiErrorResponse } from '@/types/api/api-response'
+import LoadingOverlay from '../global/loading-overlay'
 
 const LoginForm = () => {
   const router = useRouter();
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const [isPending, startTransition] = React.useTransition();
 
-  const handleEmailInputChange = (e: BaseSyntheticEvent) => {
+  const handleEmailInputChange = (e: React.BaseSyntheticEvent) => {
     setEmail(e.target.value);
   }
 
-  const handlePasswordInputChange = (e: BaseSyntheticEvent) => {
+  const handlePasswordInputChange = (e: React.BaseSyntheticEvent) => {
     setPassword(e.target.value);
   }
 
@@ -48,13 +50,14 @@ const LoginForm = () => {
         return
       }
       document.cookie = `token=${result.data.token}; path=/; max-age=7200; SameSite=Lax`;
-      toast.success("Login realizado com sucesso.");
-      router.push("/customers");
+      startTransition(() => router.push("/customers")); 
     });
   };
 
   return (
     <>
+      <LoadingOverlay show={isPending} />
+
       <form className="w-full">
         <div className="w-full">
           <Label htmlFor="email" className="mb-2 text-zinc-400 font-normal">Email</Label>
