@@ -179,7 +179,13 @@ const CustomerDetailPage = () => {
 
           <section className="bg-card text-card-foreground flex flex-col gap-2 rounded-md border p-4">
             <h2 className="font-medium text-sm">Total a pagar</h2>
-            <p className="text-lg">{ toBrazilianCurrency(customerEventsTotal ? customerEventsTotal : 0) }</p>
+            <p className="text-lg">
+              { 
+                customerEventsTotal ?
+                toBrazilianCurrency(customerEventsTotal)
+                : "R$"
+              } 
+            </p>
           </section>
 
           <section className="rounded-md border p-4 h-[calc(100%-194px-var(--spacing)*16)]">
