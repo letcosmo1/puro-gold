@@ -24,7 +24,7 @@ const LoginForm = () => {
     setPassword(e.target.value);
   }
 
-  const handleLoginButtonSubmit = async (e: React.FormEvent) => {
+  const handleLoginButtonSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if(!email || !password) {
@@ -35,7 +35,7 @@ const LoginForm = () => {
     setEmail("");
     setPassword("");
 
-    const result = request<LoginResponse | ApiErrorResponse, LoginData>("auth/login", {
+    request<LoginResponse | ApiErrorResponse, LoginData>("auth/login", {
       method: "POST",
       body: { email, password },
     }).then(result => {
@@ -51,7 +51,6 @@ const LoginForm = () => {
       toast.success("Login realizado com sucesso.");
       router.push("/customers");
     });
-
   };
 
   return (
