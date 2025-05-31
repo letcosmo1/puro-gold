@@ -68,8 +68,6 @@ const CustomersPage = () => {
     request<CustomerCreateResponse | ApiErrorResponse, UpdateCustomerData>(`customers/${selectedEditCustomer.id}`, 
       { method: "PATCH", token: token, body: { name: selectedEditCustomer.name } }
     ).then(result => {
-      setApiLoading(false);
-
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -83,6 +81,7 @@ const CustomersPage = () => {
 
       setCustomers(customersUpdated);
       setFilteredCustomers(customersUpdated);
+      requestAnimationFrame(() => setApiLoading(false));
     });
     
     setOpenEditCustomer(false);
@@ -110,8 +109,6 @@ const CustomersPage = () => {
     request<CustomerCreateResponse | ApiErrorResponse, NewCustomerData>("customers", 
       { method: "POST", token: token, body: { name } }
     ).then(result => {
-      setApiLoading(false);
-
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -119,6 +116,7 @@ const CustomersPage = () => {
       const customersCopy: Customer[] = [...customers, result.data.customer];
       setCustomers(customersCopy);
       setFilteredCustomers(customersCopy);
+      requestAnimationFrame(() => setApiLoading(false));
     });
 
     setFilterInput("");
@@ -131,13 +129,13 @@ const CustomersPage = () => {
     request<CustomerListResponse | ApiErrorResponse, null>("customers", 
       { method: "GET", token: token }
     ).then(result => {
-      setApiLoading(false);
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
       }
       setCustomers(result.data.customers);
       setFilteredCustomers(result.data.customers);
+      requestAnimationFrame(() => setApiLoading(false));
     });
   }, []);
 

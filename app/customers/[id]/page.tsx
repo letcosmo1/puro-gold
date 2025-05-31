@@ -42,13 +42,12 @@ const CustomerDetailPage = () => {
     request<CustomerResponse | ApiErrorResponse, null>(`customers/${customerId}`, 
       { method: "GET", token: token }
     ).then(result => {
-      setApiLoading(false);
-
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
       }
       setCustomer(result.data.customer);
+      requestAnimationFrame(() => setApiLoading(false));
     });
   }
 
@@ -60,14 +59,13 @@ const CustomerDetailPage = () => {
     request<CustomerEventListResponse | ApiErrorResponse, null>(`customer-events/${customerId}`, 
       { method: "GET", token: token }
     ).then(result => {
-      setApiLoading(false);
-
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
       }
       setCustomerEventsHistory(result.data.customerEvents);
       calcCustomerEventsTotal(result.data.customerEvents);
+      requestAnimationFrame(() => setApiLoading(false));
     });
   }
 
@@ -104,8 +102,6 @@ const CustomerDetailPage = () => {
     request<CustomerEventCreateResponse | ApiErrorResponse, NewCustomerEventData>("customer-events", 
       { method: "POST", token: token, body: customerEvent }
     ).then(result => {
-      setApiLoading(false);
-
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -113,6 +109,7 @@ const CustomerDetailPage = () => {
       const customerEventsLogCopy: CustomerEvent[] = [result.data.customerEvent, ...customerEventsHistory ];
       calcCustomerEventsTotal(customerEventsLogCopy);
       setCustomerEventsHistory(customerEventsLogCopy);
+      requestAnimationFrame(() => setApiLoading(false));
     });
 
     setOpenAddPurchase(false);
@@ -144,8 +141,6 @@ const CustomerDetailPage = () => {
     request<CustomerEventCreateResponse | ApiErrorResponse, NewCustomerEventData>("customer-events",
       { method: "POST", token: token, body: customerEvent }
     ).then(result => {
-      setApiLoading(false);
-
       if(!result.data.success) {
         toast.error(result.data.errorMessage);
         return
@@ -153,6 +148,7 @@ const CustomerDetailPage = () => {
       const customerEventsLogCopy: CustomerEvent[] = [result.data.customerEvent, ...customerEventsHistory ];
       calcCustomerEventsTotal(customerEventsLogCopy);
       setCustomerEventsHistory(customerEventsLogCopy);
+      requestAnimationFrame(() => setApiLoading(false));
     });
 
     setOpenAddPayment(false);
