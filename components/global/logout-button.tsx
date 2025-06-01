@@ -1,20 +1,24 @@
 'use client'
 
-import { LogOut } from 'lucide-react'
-import { useRouter } from 'next/navigation';
 import React from 'react'
+import { useRouter } from 'next/navigation';
+import LoadingOverlay from './loading-overlay';
+import { LogOut } from 'lucide-react'
 
 const LogoutButton = () => {
   const router = useRouter();
+  const [isPending, startTransition] = React.useTransition();
 
   const handleLogoutButtonClick = async () => {
     document.cookie = "token=; path=/; max-age=0";
-    router.push("/");
-    //TODO: add success toast
+    startTransition(() => router.push("/"));
   }
 
   return (
-    <LogOut onClick={ handleLogoutButtonClick } className="text-white stroke-[2.3px]"/>
+    <>
+      <LoadingOverlay show={ isPending } />
+      <LogOut onClick={ handleLogoutButtonClick } className="text-white stroke-[2.3px]"/>
+    </>
   )
 }
 

@@ -22,13 +22,20 @@ const EditCustomerDialog = (props: PropTypes) => {
     handleEditCustomerConfirmButtonClick
   } = props;
 
+  const confirmButtonRef = React.useRef<HTMLButtonElement | null>(null);
+
   const handleEditedCustomerNameInputChange = (e: React.BaseSyntheticEvent) => {
     setSelectedEditCustomer({ ...selectedEditCustomer, name: e.target.value });
   }
 
+  const handleOnOpenAutoFocus = (e: Event) => {
+    e.preventDefault(); 
+    confirmButtonRef.current?.focus(); 
+  }
+
   return (
     <Dialog open={ openEditCustomer }>
-      <DialogContent aria-describedby={undefined}>
+      <DialogContent aria-describedby={ undefined } onOpenAutoFocus={ handleOnOpenAutoFocus }>
         <DialogHeader>
           <DialogTitle>Editar nome do cliente</DialogTitle>
         </DialogHeader>
@@ -38,11 +45,16 @@ const EditCustomerDialog = (props: PropTypes) => {
             id="new-customer-name" 
             onChange={ handleEditedCustomerNameInputChange } 
             value={ selectedEditCustomer.name }
+            autoFocus={ false }
           />
         </div>
         <DialogFooter className="flex-row">
           <Button variant="secondary" className="w-1/2" onClick={ handleEditCustomerCancelButtonClick }>Cancelar</Button>
-          <Button className="w-1/2" onClick={ handleEditCustomerConfirmButtonClick }>Confirmar</Button>
+          <Button 
+            className="w-1/2" 
+            onClick={ handleEditCustomerConfirmButtonClick }
+            ref={ confirmButtonRef }
+          >Confirmar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

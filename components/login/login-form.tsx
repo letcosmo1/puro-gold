@@ -17,6 +17,9 @@ const LoginForm = () => {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [isPending, startTransition] = React.useTransition();
+  const [apiLoading, setApiLoading] = React.useState(false);
+
+  const showLoading = apiLoading || isPending;
 
   const handleEmailInputChange = (e: React.BaseSyntheticEvent) => {
     setEmail(e.target.value);
@@ -36,11 +39,14 @@ const LoginForm = () => {
 
     setEmail("");
     setPassword("");
-
+    
+    setApiLoading(true);
     request<LoginResponse | ApiErrorResponse, LoginData>("auth/login", {
       method: "POST",
       body: { email, password },
     }).then(result => {
+      setApiLoading(false);
+
       if(!result.data.success) {
         if(result.status == 404) {
           toast.error("Credenciais inválidas.");
@@ -49,6 +55,7 @@ const LoginForm = () => {
         toast.error(result.data.errorMessage);
         return
       }
+      
       document.cookie = `token=${result.data.token}; path=/; max-age=7200; SameSite=Lax`;
       startTransition(() => router.push("/customers")); 
     });
@@ -56,7 +63,7 @@ const LoginForm = () => {
 
   return (
     <>
-      <LoadingOverlay show={isPending} />
+      <LoadingOverlay show={ showLoading } />
 
       <form className="w-full">
         <div className="w-full">

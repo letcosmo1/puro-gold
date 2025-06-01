@@ -18,6 +18,7 @@ import { X } from 'lucide-react'
 import { ParamValue } from 'next/dist/server/request/params'
 import { useParams } from 'next/navigation'
 import { toast } from 'react-toastify'
+import LoadingOverlay from '@/components/global/loading-overlay'
 
 const CustomerDetailPage = () => {
   const params = useParams();
@@ -31,9 +32,12 @@ const CustomerDetailPage = () => {
   const [openAddPurchase, setOpenAddPurchase] = React.useState<boolean>(false);
   const [openAddPayment, setOpenAddPayment] = React.useState<boolean>(false);
 
+  const [apiLoading, setApiLoading] = React.useState(false);
+
   const getCustomer = () => {
     const customerId: string = String(customerIdParam);
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerResponse | ApiErrorResponse, null>(`customers/${customerId}`, 
       { method: "GET", token: token }
@@ -43,12 +47,14 @@ const CustomerDetailPage = () => {
         return
       }
       setCustomer(result.data.customer);
+      requestAnimationFrame(() => setApiLoading(false));
     });
   }
 
   const getCustomerEvents = () => {
     const customerId: string = String(customerIdParam);
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerEventListResponse | ApiErrorResponse, null>(`customer-events/${customerId}`, 
       { method: "GET", token: token }
@@ -59,6 +65,7 @@ const CustomerDetailPage = () => {
       }
       setCustomerEventsHistory(result.data.customerEvents);
       calcCustomerEventsTotal(result.data.customerEvents);
+      requestAnimationFrame(() => setApiLoading(false));
     });
   }
 
@@ -90,6 +97,7 @@ const CustomerDetailPage = () => {
       value: toPositive(numberValue)
     }
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerEventCreateResponse | ApiErrorResponse, NewCustomerEventData>("customer-events", 
       { method: "POST", token: token, body: customerEvent }
@@ -101,6 +109,7 @@ const CustomerDetailPage = () => {
       const customerEventsLogCopy: CustomerEvent[] = [result.data.customerEvent, ...customerEventsHistory ];
       calcCustomerEventsTotal(customerEventsLogCopy);
       setCustomerEventsHistory(customerEventsLogCopy);
+      requestAnimationFrame(() => setApiLoading(false));
     });
 
     setOpenAddPurchase(false);
@@ -127,6 +136,7 @@ const CustomerDetailPage = () => {
       value: toNegative(numberValue)
     }
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerEventCreateResponse | ApiErrorResponse, NewCustomerEventData>("customer-events",
       { method: "POST", token: token, body: customerEvent }
@@ -138,6 +148,7 @@ const CustomerDetailPage = () => {
       const customerEventsLogCopy: CustomerEvent[] = [result.data.customerEvent, ...customerEventsHistory ];
       calcCustomerEventsTotal(customerEventsLogCopy);
       setCustomerEventsHistory(customerEventsLogCopy);
+      requestAnimationFrame(() => setApiLoading(false));
     });
 
     setOpenAddPayment(false);
@@ -152,6 +163,8 @@ const CustomerDetailPage = () => {
 
   return (
     <>
+      <LoadingOverlay show={ apiLoading } />
+
       <main className="p-4">
         <div className="flex flex-col justify-between h-[calc(100dvh-var(--header-height)-var(--spacing)*8)]">
           <section>
@@ -166,7 +179,13 @@ const CustomerDetailPage = () => {
 
           <section className="bg-card text-card-foreground flex flex-col gap-2 rounded-md border p-4">
             <h2 className="font-medium text-sm">Total a pagar</h2>
-            <p className="text-lg">{ toBrazilianCurrency(customerEventsTotal ? customerEventsTotal : 0) }</p>
+            <p className="text-lg">
+              { 
+                customerEventsTotal ?
+                toBrazilianCurrency(customerEventsTotal)
+                : "R$"
+              } 
+            </p>
           </section>
 
           <section className="rounded-md border p-4 h-[calc(100%-194px-var(--spacing)*16)]">

@@ -23,6 +23,8 @@ const EditCustomerEventDialog = (props: PropTypes) => {
     handleEditCustomerEventConfirmButtonClick
   } = props;
 
+  const confirmButtonRef = React.useRef<HTMLButtonElement | null>(null);
+
   const handleValueInputChange = (e: React.BaseSyntheticEvent) => {
     setSelectedEditCustomerEvent({ ...selectedEditCustomerEvent, value: e.target.value });
   }
@@ -31,9 +33,14 @@ const EditCustomerEventDialog = (props: PropTypes) => {
     setSelectedEditCustomerEvent({ ...selectedEditCustomerEvent, description: e.target.value });
   }
 
+  const handleOnOpenAutoFocus = (e: Event) => {
+    e.preventDefault(); 
+    confirmButtonRef.current?.focus(); 
+  }
+
   return (
     <Dialog open={ openEditCustomerEvent } >
-      <DialogContent aria-describedby={undefined}>
+      <DialogContent aria-describedby={undefined} onOpenAutoFocus={ handleOnOpenAutoFocus } >
         <DialogHeader>
           <DialogTitle className="sr-only">
             { selectedEditCustomerEvent.type === "purchase" ? "Compra" : "Pagamento" }
@@ -63,7 +70,11 @@ const EditCustomerEventDialog = (props: PropTypes) => {
         </div>
         <DialogFooter className="flex-row">
           <Button variant="secondary" className="w-1/2" onClick={ handleEditCustomerEventCancelButtonClick }>Cancelar</Button>
-          <Button className="w-1/2" onClick={ handleEditCustomerEventConfirmButtonClick }>Confirmar</Button>
+          <Button 
+            className="w-1/2" 
+            onClick={ handleEditCustomerEventConfirmButtonClick }
+            ref={ confirmButtonRef }
+          >Confirmar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
