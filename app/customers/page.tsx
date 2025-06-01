@@ -31,6 +31,9 @@ const CustomersPage = () => {
   const [selectedEditCustomer, setSelectedEditCustomer] = React.useState<Customer>({ id: 0, name: "" });
 
   const [isPending, startTransition] = React.useTransition();
+  const [apiLoading, setApiLoading] = React.useState(false);
+  
+  const showLoading = apiLoading || isPending;
 
   const handleCustomerNameClick = (customerId: number) => {
     startTransition(() => router.push(`/customers/${ customerId }`)); 
@@ -60,6 +63,7 @@ const CustomersPage = () => {
       return
     }
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerCreateResponse | ApiErrorResponse, UpdateCustomerData>(`customers/${selectedEditCustomer.id}`, 
       { method: "PATCH", token: token, body: { name: selectedEditCustomer.name } }
@@ -77,6 +81,7 @@ const CustomersPage = () => {
 
       setCustomers(customersUpdated);
       setFilteredCustomers(customersUpdated);
+      requestAnimationFrame(() => setApiLoading(false));
     });
     
     setOpenEditCustomer(false);
@@ -99,6 +104,7 @@ const CustomersPage = () => {
       return
     }
 
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerCreateResponse | ApiErrorResponse, NewCustomerData>("customers", 
       { method: "POST", token: token, body: { name } }
@@ -110,6 +116,7 @@ const CustomersPage = () => {
       const customersCopy: Customer[] = [...customers, result.data.customer];
       setCustomers(customersCopy);
       setFilteredCustomers(customersCopy);
+      requestAnimationFrame(() => setApiLoading(false));
     });
 
     setFilterInput("");
@@ -117,6 +124,7 @@ const CustomersPage = () => {
   }
 
   React.useEffect(() => {
+    setApiLoading(true);
     const token = getCookie("token");
     request<CustomerListResponse | ApiErrorResponse, null>("customers", 
       { method: "GET", token: token }
@@ -127,12 +135,13 @@ const CustomersPage = () => {
       }
       setCustomers(result.data.customers);
       setFilteredCustomers(result.data.customers);
+      requestAnimationFrame(() => setApiLoading(false));
     });
   }, []);
 
   return (
     <>
-      <LoadingOverlay show={isPending} />
+      <LoadingOverlay show={ showLoading } />
       
       <main className="p-4 flex flex-col justify-between h-[calc(100dvh-var(--header-height))]">
         <div>
