@@ -28,7 +28,7 @@ const CustomersPage = () => {
   const [filteredCustomers, setFilteredCustomers] = React.useState<Customer[]>([]);
   const [filterInput, setFilterInput] = React.useState<string>("");
 
-  const [selectedEditCustomer, setSelectedEditCustomer] = React.useState<Customer>({ id: 0, name: "" });
+  const [selectedEditCustomer, setSelectedEditCustomer] = React.useState<Customer>({ id: "", name: "" });
 
   const [isPending, startTransition] = React.useTransition();
   const [apiLoading, setApiLoading] = React.useState(false);
@@ -86,11 +86,11 @@ const CustomersPage = () => {
     
     setOpenEditCustomer(false);
     setFilterInput("");
-    setSelectedEditCustomer({ id: 0, name: "" });
+    setSelectedEditCustomer({ id: "", name: "" });
   }
 
   const handleEditCustomerCancelButtonClick = () => {
-    setSelectedEditCustomer({ id: 0, name: "" });
+    setSelectedEditCustomer({ id: "", name: "" });
     setOpenEditCustomer(false);
   }
 

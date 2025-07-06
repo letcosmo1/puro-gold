@@ -1,5 +1,5 @@
 export type Customer = {
-  id: number,
+  id: string,
   name: string
 }
 
@@ -32,8 +32,8 @@ export type CustomerListResponse = {
 }
 
 export type CustomerEvent = {
-  id: number,
-  customerId: number,
+  id: string,
+  customerId: string,
   type: "purchase" | "payment",
   date: string,
   description: string,
@@ -42,7 +42,7 @@ export type CustomerEvent = {
 }
 
 export type NewCustomerEventData = {
-  customerId: number,
+  customerId: string,
   type: "purchase" | "payment",
   date: string,
   description: string,

@@ -11,8 +11,8 @@ import { request } from '@/lib/api'
 import { ApiErrorResponse } from '@/types/api/api-response'
 
 const initializeCustomerEvent: CustomerEvent = {
-  id: 0,
-  customerId: 0,
+  id: "",
+  customerId: "",
   type: "purchase",
   date: "",
   description: "",
