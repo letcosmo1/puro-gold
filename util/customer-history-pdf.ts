@@ -55,8 +55,12 @@ export const customerEventsPdfLayout = async (customer: Customer, customerEvents
   // CUSTOMER EVENTS
   for (let i = 0; i < CUSTOMER_EVENTS_PER_PAGE; i++) {
     if(customerEventsHistory[i]) {
-      doc.text(formatStringToDate(customerEventsHistory[i].createdAt), CENTER_EVENTS, line);
-      doc.text(customerEventsHistory[i].type === "purchase" ? "Compra" : "Pagamento", (CENTER_EVENTS + 23), line);
+      doc.text(customerEventsHistory[i].date, CENTER_EVENTS, line);
+      doc.text(
+        customerEventsHistory[i].type === "purchase" ? "Compra" : "Pagamento", 
+        customerEventsHistory[i].date ? (CENTER_EVENTS + 23) : CENTER_EVENTS, 
+        line
+      );
     }
     
     line += SPACING;
