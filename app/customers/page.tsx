@@ -35,7 +35,7 @@ const CustomersPage = () => {
   
   const showLoading = apiLoading || isPending;
 
-  const handleCustomerNameClick = (customerId: number) => {
+  const handleCustomerNameClick = (customerId: string) => {
     startTransition(() => router.push(`/customers/${ customerId }`)); 
   }
 
