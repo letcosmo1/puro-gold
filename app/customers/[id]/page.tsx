@@ -24,7 +24,7 @@ const CustomerDetailPage = () => {
   const params = useParams();
   const customerIdParam: ParamValue = params.id;
 
-  const [customer, setCustomer] = React.useState<Customer>({ id: 0, name: "" });
+  const [customer, setCustomer] = React.useState<Customer>({ id: "", name: "" });
 
   const [customerEventsHistory, setCustomerEventsHistory] = React.useState<CustomerEvent[]>([]);
   const [customerEventsTotal, setCustomerEventsTotal] = React.useState<number | null>(null);

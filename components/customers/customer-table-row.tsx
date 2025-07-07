@@ -6,7 +6,7 @@ import { Customer } from '@/types/entities/customer'
 type PropTypes = {
   customer: Customer,
   handleEditCustomerButtonClick: (customer: Customer) => void,
-  handleCustomerNameClick: (customerId: number) => void
+  handleCustomerNameClick: (customerId: string) => void
 }
 
 const CustomerTableRow = (props: PropTypes) => {
