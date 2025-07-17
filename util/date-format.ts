@@ -1,8 +1,12 @@
 export const formatDate = (date: Date ) => {
+  //FORMAT: dd/mm/yyyy
+  
   return date.toLocaleDateString('pt-BR');
 }
 
 export const formatStringToDate = (date: string ) => {
+  //FORMAT: dd/mm/yyyy
+
   const parsedDate = new Date(date);
   return parsedDate.toLocaleDateString('pt-BR');
 }
