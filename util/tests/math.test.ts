@@ -1,6 +1,6 @@
 import { toNegative, toPositive } from "../math"
 
-describe("Test toPositive function", ( )=> {
+describe("Test toPositive function", () => {
   it("When given a negative number then return it's absolute value", ()=>{
     expect(toPositive(-1)).toBe(1); 
   })
