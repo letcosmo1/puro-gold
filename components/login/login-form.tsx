@@ -68,7 +68,8 @@ const LoginForm = () => {
       <form className="w-full">
         <div className="w-full">
           <Label htmlFor="email" className="mb-2 text-zinc-400 font-normal">Email</Label>
-          <Input 
+          <Input
+            data-testid="login-email-input"
             id="email"
             onChange={ handleEmailInputChange }
             value={ email }
@@ -77,13 +78,15 @@ const LoginForm = () => {
         <div className="w-full mt-6">
           <Label htmlFor="password" className="mb-2 text-zinc-400 font-normal">Senha</Label>
           <Input 
+            data-testid="login-password-input"
             id="password" 
             type="password"
             onChange={ handlePasswordInputChange }
             value={ password }
           />
         </div>
-        <Button 
+        <Button
+          data-testid="login-submit-button"
           type="submit" 
           className="w-full mt-12" 
           onClick={ handleLoginButtonSubmit }
