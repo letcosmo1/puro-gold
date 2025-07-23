@@ -16,7 +16,11 @@ const CustomerTableRow = (props: PropTypes) => {
     <TableRow key={ customer.id }>
       <TableCell className="flex justify-between py-4">
         <p onClick={ () => handleCustomerNameClick(customer.id) }>{ customer.name }</p>
-        <Settings2 className="text-primary" onClick={ () => handleEditCustomerButtonClick(customer) } />
+        <Settings2
+          data-testid={`customers-settings-icon-${customer.id}`}
+          className="text-primary" 
+          onClick={ () => handleEditCustomerButtonClick(customer) } 
+        />
       </TableCell>
     </TableRow>
   )

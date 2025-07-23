@@ -16,12 +16,3 @@ export const invalidCredentialsLoginApiResponse = {
     errorMessage: "mocked-error-message"
   }
 }
-
-export const genericErrorLoginApiResponse = {
-  ok: true,
-  status: 500,
-  data: {
-    success: false,
-    errorMessage: "mocked-error-message"
-  }
-}

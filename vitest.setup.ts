@@ -3,6 +3,11 @@ import '@testing-library/jest-dom';
 import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 export const mockRouterPush = vi.fn();
 
 vi.mock("next/navigation", () => ({
@@ -32,7 +37,10 @@ vi.mock("react-toastify", async () => {
   };
 });
 
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
+class ResizeObserver {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+}
+
+global.ResizeObserver = ResizeObserver;

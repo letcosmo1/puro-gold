@@ -147,6 +147,7 @@ const CustomersPage = () => {
         <div>
           <Label htmlFor="search-customer" className="mb-2">Pesquisar</Label>
           <Input 
+            data-testid="customers-search-customer-input"
             id="search-customer" 
             placeholder="Nome do cliente" 
             onChange={ handleFilterCustomersInputChange }
@@ -173,7 +174,13 @@ const CustomersPage = () => {
           </ScrollArea>
         </div>
 
-        <Button onClick={ handleAddCustomerButtonClick } className="w-full">Adicionar Cliente</Button>
+        <Button
+          data-testid="customers-add-customer-button"
+          onClick={ handleAddCustomerButtonClick } 
+          className="w-full"
+        >
+          Adicionar Cliente
+        </Button>
       </main>
 
       <AddCustomerDialog 

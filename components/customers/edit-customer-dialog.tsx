@@ -41,7 +41,8 @@ const EditCustomerDialog = (props: PropTypes) => {
         </DialogHeader>
         <div>
           <Label htmlFor="new-customer-name" className="mb-2">Novo nome</Label>
-          <Input 
+          <Input
+            data-testid="customers-edit-customer-name-input"
             id="new-customer-name" 
             onChange={ handleEditedCustomerNameInputChange } 
             value={ selectedEditCustomer.name }
@@ -49,12 +50,22 @@ const EditCustomerDialog = (props: PropTypes) => {
           />
         </div>
         <DialogFooter className="flex-row">
-          <Button variant="secondary" className="w-1/2" onClick={ handleEditCustomerCancelButtonClick }>Cancelar</Button>
           <Button 
+            data-testid="customers-edit-customer-cancel-button"
+            variant="secondary" 
+            className="w-1/2" 
+            onClick={ handleEditCustomerCancelButtonClick }
+          >
+            Cancelar
+          </Button>
+          <Button
+            data-testid="customers-edit-customer-confirm-button"
             className="w-1/2" 
             onClick={ handleEditCustomerConfirmButtonClick }
             ref={ confirmButtonRef }
-          >Confirmar</Button>
+          >
+            Confirmar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
