@@ -1,11 +1,11 @@
 import { CustomerEvent, Customer } from "@/types/entities/customer";
 
 export const mockedCustomers: Customer[] = [
-  { id: "1", name: 'Alice Johnson' },
-  { id: "2", name: 'Brian Smith' },
-  { id: "3", name: 'Carla Martinez' },
-  { id: "4", name: 'David Kim' },
-  { id: "5", name: 'Emily Chen' },
+  { id: "1", name: "Alice Johnson" },
+  { id: "2", name: "Brian Smith" },
+  { id: "3", name: "Carla Martinez" },
+  { id: "4", name: "David Kim" },
+  { id: "5", name: "Emily Chen" },
 ];
 
 export const mockedCustomerEventHistory: CustomerEvent[] = [

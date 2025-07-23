@@ -4,7 +4,8 @@ import { mockRouterPush, mockToastError, mockToastWarning } from '@/vitest.setup
 import userEvent from '@testing-library/user-event'
 import LoginForm from "./login-form";
 import { request } from "@/lib/api";
-import { invalidCredentialsLoginApiResponse, genericErrorLoginApiResponse, successfulLoginApiResponse } from '@/mocked-data/api-responses';
+import { invalidCredentialsLoginApiResponse, successfulLoginApiResponse } from '@/mocked-data/api-responses/auth';
+import { genericErrorApiResponse } from '@/mocked-data/api-responses/error';
 
 vi.mock("@/lib/api", () => ({
   request: vi.fn(),
@@ -48,7 +49,7 @@ describe("Test login form", () => {
     });
 
     it("Should show toast error when an error is returned", async () => {
-      vi.mocked(request).mockResolvedValueOnce(genericErrorLoginApiResponse);
+      vi.mocked(request).mockResolvedValueOnce(genericErrorApiResponse);
       render(<LoginForm />);
       await setupAndSubmitLoginForm();
       expect(request).toHaveBeenCalledTimes(1);

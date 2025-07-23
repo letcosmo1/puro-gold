@@ -41,15 +41,29 @@ const AddCustomerDialog = (props: PropTypes) => {
         </DialogHeader>
         <div>
           <Label htmlFor="customer-name" className="mb-2">Nome</Label>
-          <Input 
+          <Input
+            data-testid="customers-add-customer-name-input"
             id="customer-name" 
             onChange={ handleNameInputChange }
             value={ name }
           />
         </div>
         <DialogFooter className="flex-row">
-          <Button variant="secondary" className="w-1/2" onClick={ handleCancelButtonClick }>Cancelar</Button>
-          <Button className="w-1/2" onClick={ () => handleConfirmButtonClick(name) }>Confirmar</Button>
+          <Button
+            data-testid="customers-add-customer-cancel-button"
+            variant="secondary" 
+            className="w-1/2" 
+            onClick={ handleCancelButtonClick }
+          >
+            Cancelar
+          </Button>
+          <Button
+            data-testid="customers-add-customer-confirm-button"
+            className="w-1/2" 
+            onClick={ () => handleConfirmButtonClick(name) }
+          >
+            Confirmar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
